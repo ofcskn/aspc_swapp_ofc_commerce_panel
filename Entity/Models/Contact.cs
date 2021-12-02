@@ -11,7 +11,7 @@ namespace Entity.Models
         public string Message { get; set; }
         public DateTime Date { get; set; }
         public string Ip { get; set; }
-        public bool Report { get; set; }
+        public bool? Report { get; set; }
         public string Subject { get; set; }
     }
 }

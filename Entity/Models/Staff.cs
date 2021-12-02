@@ -13,6 +13,7 @@ namespace Entity.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
+        public string Image { get; set; }
         public int? DepartmentId { get; set; }
         public bool Status { get; set; }
         public DateTime StartDate { get; set; }
@@ -26,7 +27,6 @@ namespace Entity.Models
         public DateTime LastLoginDate { get; set; }
         public string LastLoginIp { get; set; }
         public int? PinCode { get; set; }
-        public string Image { get; set; }
 
         public virtual Department Department { get; set; }
         public virtual ICollection<Invoice> Invoice { get; set; }

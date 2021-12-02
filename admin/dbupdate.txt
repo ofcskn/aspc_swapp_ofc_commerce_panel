@@ -1,1 +1,1 @@
- Scaffold-DbContext "Server=LAPTOP-AATLPISC;Database=Swapp;Integrated Security=True;" Microsoft.EntityFrameworkCore.SqlServer -Project "Entity"-OutputDir Models -ContextDir Context -Context SwappDbContext -f 
+ Scaffold-DbContext "Server=(local);Database=Swapp;Integrated Security=True;" Microsoft.EntityFrameworkCore.SqlServer -Project "Entity"-OutputDir Models -ContextDir Context -Context SwappDbContext -f 

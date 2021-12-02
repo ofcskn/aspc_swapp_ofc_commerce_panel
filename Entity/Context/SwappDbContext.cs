@@ -80,7 +80,7 @@ namespace Entity.Context
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=LAPTOP-AATLPISC;Database=Swapp;Integrated Security=True;");
+                optionsBuilder.UseSqlServer("Server=(local);Database=Swapp;Integrated Security=True;");
             }
         }
 
@@ -96,10 +96,7 @@ namespace Entity.Context
                     .IsRequired()
                     .HasMaxLength(60);
 
-                entity.Property(e => e.Image)
-                    .IsRequired()
-                    .HasMaxLength(150)
-                    .HasDefaultValueSql("(N'default.jpg')");
+                entity.Property(e => e.Image).HasMaxLength(150);
 
                 entity.Property(e => e.LastLoginIp)
                     .IsRequired()
@@ -278,9 +275,9 @@ namespace Entity.Context
                     .IsRequired()
                     .HasMaxLength(128);
 
-                entity.Property(e => e.Subject)
-                    .IsRequired()
-                    .HasMaxLength(128);
+                entity.Property(e => e.Report).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Subject).HasMaxLength(128);
             });
 
             modelBuilder.Entity<Current>(entity =>
@@ -289,14 +286,11 @@ namespace Entity.Context
 
                 entity.Property(e => e.Image).HasMaxLength(128);
 
-                entity.Property(e => e.LastLoginDate)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.LastLoginDate).HasColumnType("datetime");
 
                 entity.Property(e => e.LastLoginIp)
                     .IsRequired()
-                    .HasMaxLength(256)
-                    .HasDefaultValueSql("(N'::1')");
+                    .HasMaxLength(256);
 
                 entity.Property(e => e.Mail)
                     .IsRequired()
@@ -872,14 +866,11 @@ namespace Entity.Context
 
                 entity.Property(e => e.Image).HasMaxLength(64);
 
-                entity.Property(e => e.LastLoginDate)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.LastLoginDate).HasColumnType("datetime");
 
                 entity.Property(e => e.LastLoginIp)
                     .IsRequired()
-                    .HasMaxLength(256)
-                    .HasDefaultValueSql("(N'::1')");
+                    .HasMaxLength(256);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
