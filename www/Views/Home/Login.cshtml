@@ -1,0 +1,203 @@
+﻿@model Current
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = null;
+}
+<!--A Design by W3layouts
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Giriş Yap</title>
+    <!-- custom-theme -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Project Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template,
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+    <script type="application/x-javascript">
+        addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+               function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!-- //custom-theme -->
+    <!-- Google fonts -->
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;subset=latin-ext" rel="stylesheet">
+    <!-- Google fonts -->
+    <!-- css files -->
+    <link href="~/lib/weblogin/css/login-style.css" rel="stylesheet" />
+    <!-- //css files -->
+    <link href="~/lib/weblogin/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/lib/weblogin/css/login-popup-box.css" rel="stylesheet" />
+
+</head>
+<!-- body starts -->
+<body>
+
+    <!-- section -->
+    <section class="register">
+        <div class="header">
+            <div class="logo">
+                <a href="#">SWAPP</a>
+            </div>
+            <div class="social">
+                <li><a href="#"><span class="fa fa-facebook"></span></a></li>
+                <li><a href="#"><span class="fa fa-twitter"></span></a></li>
+                <li><a href="#"><span class="fa fa-linkedin"></span></a></li>
+                <li><a href="#"><span class="fa fa-google-plus"></span></a></li>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="register-full">
+            <div class="register-left">
+                <div class="register">
+                    <p>Senin markan, senin Swapp'in..</p>
+                    <h1>Swapp</h1>
+                    @if (ViewBag.InfoMessage != null)
+                    {
+                        <div class="alert mr-5" style="background:#202020">
+                            <p class="mr-0" style="color:#fff;">@ViewBag.InfoMessage</p>
+                        </div>
+                    }
+                    <p>
+                        Binlerce farklı ürünümüzle sizlere daha iyi hizmet verebilmek için çalışıyoruz. Bu pandemi
+                        sürecinde senin yanındayız. Swapp..
+                    </p>
+                    <div class="content3">
+                        <ul>
+                            <li><a class="" href="#"> Firmalarımız</a></li>
+                            <li><a class="read" href="#"> Anasayfa</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="register-right">
+                <div class="register-in">
+                    <a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog2">Kayıt Ol »</a>
+                </div>
+                <div class="register-in middle">
+                    <a class="book " href="/admin/home/login">Giriş Yap »</a>
+                </div>
+                <div class="register-in">
+                    <a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog1">Abone ol »</a>
+                </div>
+                <div class="clear"> </div>
+            </div>
+            <div class="clear"> </div>
+        </div>
+        <!-- copyright -->
+        <p class="agile-copyright">© 2018 Project. Tüm hakları saklıdır. | <a href="https://w3layouts.com/" target="_blank">W3layouts</a> tarafından tasarlandı.</p>
+        <!-- //copyright -->
+    </section>
+    <!-- //section -->
+    <!-- login form popup-->
+    <div class="pop-up">
+        <div id="small-dialog" class="mfp-hide book-form">
+
+            <div class="login-form login-form-left">
+                <div class="agile-row">
+                    <h3>Cari Girişi</h3>
+                    <span class="fa fa-lock"></span>
+                    <div class="clear"></div>
+                    <div class="login-agileits-top">
+                        <form action="#" method="post">
+                            <input type="text" class="name" name="user name" Placeholder="Kullanıcı Adı" required="" />
+                            <input type="password" class="password" name="Password" Placeholder="Şifre" required="" />
+                            <input type="submit" value="Giriş Yap">
+                        </form>
+                    </div>
+                    <div class="login-agileits-bottom">
+                        <h6><a href="#">Şifremi Unuttum</a></h6>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- //login form popup-->
+    <!-- subscribe form popup-->
+    <div class="pop-up">
+        <div id="small-dialog1" class="mfp-hide book-form">
+
+            <div class="login-form login-form-left">
+                <div class="agile-row">
+                    <h3>Abonelik</h3>
+                    <p>
+                        Alışveriş hizmetlerimizden daha iyi yararlanabilmeniz, indirimlerden, önceki alışverişlerinizden haberdar
+                        olmak için abone olabilirsiniz!
+                    </p>
+                    <div class="clear"></div>
+                    <div class="login-agileits-top">
+                        <form action="#" method="post">
+                            <input type="text" class="name" name="name" Placeholder="İsim - Soyisim" required="" />
+                            <input type="email" class="email" name="email" Placeholder="Mail" required="" />
+                            <input type="submit" value="Abone Ol">
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- //subscribe form popup-->
+    <!-- register form popup-->
+    <div class="pop-up">
+        <div id="small-dialog2" class="mfp-hide book-form">
+
+            <div class="login-form login-form-left">
+                <div class="agile-row">
+                    <h3 style="width:100%;margin-bottom:20px;">Cari Kayıt Formu</h3>
+                    <p style="margin-bottom:20px;">
+                        Alışveriş hizmetlerimizden daha iyi yararlanabilmeniz, indirimlerden, önceki alışverişlerinizden haberdar
+                        olmak için üye olabilirsiniz! Çalışanlarımızla yapacağınız alışveriş sonrasında bilgilerinizi <b>SWAPP</b>'den takip edebilirsiniz.
+                    </p>
+                    <div class="login-agileits-top">
+                        <form asp-controller="home" asp-action="login" method="post">
+                            <input type="text" class="name" asp-for="UserName" Placeholder="Kullanıcı Adı" required="" />
+                            <input type="text" class="name" asp-for="Name" Placeholder="İsim" required="" />
+                            <input type="text" class="name" asp-for="Surname" Placeholder="Soyisim" required="" />
+                            <input type="email" class="email" asp-for="Mail" Placeholder="Email" required="" />
+                            <input type="password" class="password" asp-for="Password" Placeholder="Şifre" required="" />
+                            <div class="login-check">
+                                <label class="checkbox"><input type="checkbox" name="ContractEnabled" checked=""><i> </i> Onaylıyorum, <a href="#">Kurallarımız</a></label>
+                                <label class="checkbox"><input type="checkbox" name="KvkEnabled" checked=""><i> </i> Onaylıyorum, <a href="#">KVK</a></label>
+                            </div>
+                            <input type="submit" value="Hadi Başlayalım">
+                        </form>
+                    </div>
+                </div>
+                </div>
+
+            </div>
+            </div>
+            <!-- //register form popup-->
+            <!-- js -->
+            <script src="~/lib/weblogin/js/jquery-2.1.4.min.js"></script>
+            <!-- //js -->
+            <!--popup-js-->
+            <script src="~/lib/weblogin/js/jquery.magnific-popup.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $('.popup-with-zoom-anim').magnificPopup({
+                        type: 'inline',
+                        fixedContentPos: false,
+                        fixedBgPos: true,
+                        overflowY: 'auto',
+                        closeBtnInside: true,
+                        preloader: false,
+                        midClick: true,
+                        removalDelay: 300,
+                        mainClass: 'my-mfp-zoom-in'
+                    });
+
+                });
+            </script>
+            <!--//popup-js-->
+
+        </body>
+        <!-- //body ends -->
+    </html>

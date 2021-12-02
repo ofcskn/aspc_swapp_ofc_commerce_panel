@@ -1,0 +1,83 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewData["Title"]</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <environment include="Development">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="~/admin-lte/plugins/fontawesome-free/css/all.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        @*<link href="~/lib/ionicons/ionicons.min.css" rel="stylesheet" />*@
+        <!-- Tempusdominus Bbootstrap 4 -->
+        <link rel="stylesheet" href="~/admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+        <!-- iCheck -->
+        <link rel="stylesheet" href="~/admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="~/admin-lte/dist/css/adminlte.min.css">
+        <!-- overlayScrollbars -->
+        <link rel="stylesheet" href="~/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+        <!-- Daterange picker -->
+        <link rel="stylesheet" href="~/admin-lte/plugins/daterangepicker/daterangepicker.css">
+        <!-- summernote -->
+        <link rel="stylesheet" href="~/admin-lte/plugins/summernote/summernote-bs4.css">
+        <!-- My Css -->
+        <link href="~/css/site.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <link href="~/css/style.min.css" rel="stylesheet" />
+    </environment>
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    @RenderSection("style", required: false)
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        @await Component.InvokeAsync("TopNavbar")
+        @await Component.InvokeAsync("Sidebar")
+        @RenderBody()
+        <partial name="_Footer" />
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    <environment include="Development">
+        <!-- jQuery -->
+        <script src="~/admin-lte/plugins/jquery/jquery.min.js"></script>
+        <!-- jQuery UI 1.11.4 -->
+        <script src="~/admin-lte/plugins/jquery-ui/jquery-ui.min.js"></script>
+        <!-- Jquery Backdown Timer -->
+        <script src="~/lib/jquery-countdown-timer/dist/js/jQuery.countdownTimer.min.js"></script>
+        <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+        <script src="~/lib/sweet-alert/sweetalert.min.js"></script>
+        <!-- Bootstrap 4 -->
+        <script src="~/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- Summernote -->
+        <script src="~/admin-lte/plugins/summernote/summernote-bs4.min.js"></script>
+        <script src="~/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+        <!-- AdminLTE App -->
+        <script src="~/admin-lte/dist/js/adminlte.js"></script>
+        <!-- AdminLTE for demo purposes -->
+        <script src="~/admin-lte/dist/js/demo.js"></script>
+        @RenderSection("script", required: false)
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/lib.min.js"></script>
+        @RenderSection("script", required: false)
+        <!-- AdminLTE App -->
+        <script src="~/admin-lte/dist/js/adminlte.js"></script>
+        <!-- AdminLTE for demo purposes -->
+        <script src="~/admin-lte/dist/js/demo.js"></script>
+    </environment>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

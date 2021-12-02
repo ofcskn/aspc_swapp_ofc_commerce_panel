@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = ViewBag.ErrorCode + " Hata Sayfası";
+}
+
+<section class="container error_section">
+    <div class="error_content">
+        <h1><strong>@ViewBag.ErrorCode</strong></h1>
+        <p>@ViewBag.ErrorMessage</p>
+        <a class="btn custom-btn" href="/admin/home/report">SORUN BİLDİR</a>
+    </div>
+</section>

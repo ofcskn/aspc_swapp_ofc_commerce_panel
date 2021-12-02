@@ -1,0 +1,32 @@
+[
+  {
+    "outputFileName": "wwwroot/css/style.min.css",
+    "inputFiles": [
+      "wwwroot/admin-lte/plugins/fontawesome-free/css/all.min.css",
+      "wwwroot/admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css",
+      "wwwroot/admin-lte/plugins/icheck-bootstrap/icheck-bootstrap.min.css",
+      "wwwroot/admin-lte/dist/css/adminlte.min.css",
+      "wwwroot/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css",
+      "wwwroot/admin-lte/plugins/daterangepicker/daterangepicker.css",
+      "wwwroot/admin-lte/plugins/summernote/summernote-bs4.css",
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/lib.min.js",
+    "inputFiles": [
+      "wwwroot/admin-lte/plugins/jquery/jquery.min.js",
+      "wwwroot/admin-lte/plugins/jquery-ui/jquery-ui.min.js",
+      "wwwroot/lib/jquery-countdown-timer/dist/js/jQuery.countdownTimer.min.js",
+      "wwwroot/lib/sweet-alert/sweetalert.min.js",
+      "wwwroot/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js",
+      "wwwroot/admin-lte/plugins/summernote/summernote-bs4.min.js",
+      "wwwroot/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

@@ -1,0 +1,178 @@
+﻿@model IEnumerable<Notification>
+@{
+    ViewData["Title"] = "Bildirim Listesi";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Bildirimler</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Bildirimler</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table projects">
+                            <thead>
+                                <tr>
+                                    <th>Okundu/Okunmadı</th>
+                                    <th>Başlık</th>
+                                    <th>Gönderim Tarihi</th>
+                                    <th>Konu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() != 0)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        string isReadClass = "tr-not-read";
+                                        if (item.ReadEnabled != false)
+                                        {
+                                            isReadClass = "tr-read";
+                                        }
+                                        string timeAgoText = null;
+                                        string timeAgoClass = null;
+                                        var timeSpan = DateTime.Now - item.SendDate;
+
+                                        if (timeSpan <= TimeSpan.FromSeconds(60))
+                                        {
+                                            timeAgoClass = "badge-success";
+                                            timeAgoText = string.Format("{0} saniye önce", timeSpan.Seconds);
+                                        }
+                                        else if (timeSpan <= TimeSpan.FromMinutes(60))
+                                        {
+                                            timeAgoClass = "badge-success";
+                                            timeAgoText = timeSpan.Minutes > 1 ? String.Format("{0} dakika önce", timeSpan.Minutes) : "bir dakika önce";
+                                        }
+                                        else if (timeSpan <= TimeSpan.FromHours(24))
+                                        {
+                                            timeAgoClass = "badge-info";
+                                            timeAgoText = timeSpan.Hours > 1 ? String.Format("{0} saat önce", timeSpan.Hours) : "bir saat önce";
+                                        }
+                                        else if (timeSpan <= TimeSpan.FromDays(30))
+                                        {
+                                            timeAgoClass = "badge-dark";
+                                            timeAgoText = timeSpan.Days > 1 ? String.Format("{0} gün önce", timeSpan.Days) : "dün";
+                                        }
+                                        else if (timeSpan <= TimeSpan.FromDays(365))
+                                        {
+                                            timeAgoClass = "badge-warning";
+                                            timeAgoText = timeSpan.Days > 30 ? String.Format("{0} ay önce", timeSpan.Days / 30) : "bir ay önce";
+                                        }
+                                        else
+                                        {
+                                            timeAgoClass = "badge-danger";
+                                            timeAgoText = timeSpan.Days > 365 ? String.Format("{0} yıl önce", timeSpan.Days / 365) : "bir yıl önce";
+                                        }
+                                        <tr class="notification-tr @isReadClass">
+                                            <td>
+                                                <div class="icheck-primary d-flex justify-content-center">
+                                                    <input data-id="@item.Id" type="checkbox" value="" @(Convert.ToBoolean(item.ReadEnabled) ? "checked" : string.Empty) class="isReadCheck checkbox" name="check_@item.Id" id="check_@item.Id">
+                                                    <label for="check_@item.Id"></label>
+                                                </div>
+                                            </td>
+                                            <td>@item.Title</td>
+                                            <td><div class="badge @timeAgoClass">@timeAgoText</div></td>
+                                            <td>@item.NotType.GeneralType</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="20">
+                                            <p class="my-3">Henüz eklenmiş veri bulunmamaktadır.</p>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section script{
+    <script>
+        $(".isReadCheck").on("click", function () {
+            const itemId = $(this).data("id");
+            const formData = new FormData();
+            formData.append("id", itemId);
+            var $this = $(this);
+            $.ajax({
+                url: "/admin/notification/isread",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (data) {;
+                    $this.closest(".notification-tr").removeClass("tr-not-read");
+                    $this.closest(".notification-tr").addClass("tr-read");
+                },
+                error: function () {
+                    swal("Bir hata oluştu. Bağlantınızı kontrol edip tekrar Deneyiniz.");
+                }
+            });
+        });
+        $(".delete").on("click", function () {
+            const itemId = $(this).data("id");
+
+            const formData = new FormData();
+            formData.append("id", itemId);
+            var $this = $(this);
+            $.ajax({
+                url: "/admin/notification/delete",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function () {
+                    swal("Silme İşlemi Başarılı");
+                    setTimeout(function () { $this.closest(".notification-tr").hide(); }, 1500);
+                },
+                error: function () {
+                    swal("Silme işlemi başarılı olamadı. Tekrar Deneyiniz.");
+                }
+            });
+
+        });
+    </script>
+}

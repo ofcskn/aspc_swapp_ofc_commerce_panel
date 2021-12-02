@@ -1,0 +1,35 @@
+﻿@{
+    Layout = "_Layout";
+    @if (ViewBag.situation == "enabled")
+    {
+        ViewData["Title"] = "Abone Ol";
+    }
+    else if (ViewBag.situation == "disabled")
+    {
+        ViewData["Title"] = "Abone İptali";
+    }
+}
+<partial name="_Header" model="Model" />
+<section class="container subscription-confirmation-section section-spacing">
+    <div class="subscription-confirmation-content ">
+        @if (ViewBag.situation == "enabled")
+        {
+            <h2>ARAMIZA HOŞGELDİN!</h2>
+            <h4><b>@ViewBag.subscriberMail</b></h4>
+            <p>Paylaştığım son bloglarımı sana mail olarak göndereceğim. İstediğin zaman aboneliğini sonlandırabilirsin.</p>
+            <div class="info">
+                <p class="text-right text-info">Abonelik tarihi : @ViewBag.subscriptionDate</p>
+                <a class="btn btn-info" href="/">Anasayfa</a>
+            </div>
+        }
+        else if (ViewBag.situation == "disabled")
+        {
+            <h2>Aramızdan Ayrılmana Üzüldüm!</h2>
+            <p>İstediğin zaman tekrardan ücretsiz abone olabilirsin. Hoşçakal..</p>
+            <div class="info">
+                <p class="text-right text-info">Abonelik İptal tarihi : @ViewBag.subscriptionDate</p>
+                <a class="btn btn-info" href="/">Anasayfa</a>
+            </div>
+        }
+    </div>
+</section>

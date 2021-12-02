@@ -1,0 +1,283 @@
+﻿@model IEnumerable<ProductCargo>
+@inject IUnitOfWork _uow
+@{
+    ViewData["Title"] = "Kargo Süreç Listesi";
+    var role = _uow.Admin.GetRoleByAdmin;
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Kargo Süreç</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Kargo Süreç Listesi</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <form asp-action="list" method="get">
+                        <div class="row m-4">
+                            <input class="col-10 form-control" name="q" placeholder="000000" />
+                            <input class="col-2 btn btn-success" type="submit" value="Kodu Ara" />
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-striped projects">
+                            <thead>
+                                <tr>
+                                    <th>Takip Kodu</th>
+                                    <th>Başlık</th>
+                                    <th>Firma</th>
+                                    <th>Başlangıç Tarihi</th>
+                                    <th>Bitiş Tarihi</th>
+                                    <th>Müşteri Kullanıcı Adı</th>
+                                    <th>Kargo Takip</th>
+                                    <th>Kargo Takip Harici</th>
+                                    @if (role != "current")
+                                    {
+                                        <th>
+                                            İşlemler
+                                        </th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() != 0)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.CargoNo</td>
+                                            <td>@item.Title</td>
+                                            <td>@item.CargoCompany.Title</td>
+                                            <td>@item.StartDate.ToString("d")</td>
+                                            <td>
+                                                @if (item.EndDate != null)
+                                                {
+                                                    <span>@Convert.ToDateTime(item.EndDate).ToString("d")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+                                            </td>
+                                            <td>@item.Current.UserName</td>
+                                            <td><a class="btn btn-outline-danger" asp-controller="cargoprocess" asp-action="status" asp-route-cargoid="@item.Id">Kargo Takip</a></td>
+                                            <td><a class="btn btn-outline-info" href="@item.CargoChaseLink">Kargo Takip [Şirkete Özel]</a></td>
+                                            @if (role != "current")
+                                            {
+                                                <td class="project-actions text-right">
+                                                    @if (item.Enabled == true)
+                                                    {
+                                                        <a href="#" class="btn btn-warning btn-publish" data-id="@item.Id"><i class="fa text-white fa-truck-loading"></i> Gönderildi</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="#" class="btn btn-success btn-publish" data-id="@item.Id"><i class="fa text-white fa-truck-moving"></i> Devam Ediyor</a>
+                                                    }
+                                                    <a class="btn btn-info " asp-action="manage" asp-route-id="@item.Id"><i class="fa fa-pencil-alt"></i></a>
+                                                    <a class="btn btn-danger delete" data-id="@item.Id"><i class="fas fa-trash"></i></a>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="15">
+                                            <p class="my-3">Henüz eklenmiş veri bulunmamaktadır.</p>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+
+            @if (role != "current")
+            {
+                <a asp-action="manage" type="button" class="btn btn-success">
+                    Kargo Süreci Ekle
+                </a>
+            }
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section script{
+
+    <script>
+        $(".btn-publish").on("click", function () {
+            var itemId = $(this).data("id");
+
+            swal("Yayınlayacaksınız. Emin misiniz?", {
+                buttons: {
+                    cancel: "Geri Dön",
+                    catch: {
+                        text: "Yayınla",
+                        value: "catch",
+                        closeModal: false,
+                    },
+                    pause: {
+                        text: "Duraklat",
+                        value: "pause",
+                        closeModal: false,
+                    },
+                },
+            })
+                .then((value) => {
+                    switch (value) {
+                        case "pause":
+                            var formData = new FormData();
+                            formData.append("itemId", itemId);
+                            formData.append("enabled", false);
+
+                            $.ajax({
+                                url: "/admin/productcargo/publishstatus",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    if (data == "no") {
+                                        swal("Owww!", "Duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                    else {
+                                        swal("Heey", "Duraklatıldı.", "success");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                },
+                                error: function () {
+                                    swal("Owww!", "Ürün duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                }
+                            });
+                            break;
+
+                        case "catch":
+
+                            //Ajax
+                            var formData = new FormData();
+                            formData.append("itemId", itemId);
+                            formData.append("enabled", true);
+
+                            $.ajax({
+                                url: "/admin/productcargo/publishstatus",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    if (data == "no") {
+                                        swal("Owww!", "Erişim pasifleştirildi. Lütfen daha sonra tekrar dene.!", "error");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                    else {
+                                        swal("Harika!", "Erişim aktifleştirildi!", "success");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                },
+                                error: function () {
+                                    swal("Owww!", "Erişim durumu değiştirilemedi. Lütfen daha sonra tekrar dene.!", "error");
+                                }
+                            });
+
+                            break;
+
+                        default:
+                            swal("Görüşürüz!");
+                    }
+                });
+
+        });
+
+        $(".delete").on("click", function () {
+            const itemId = $(this).data("id");
+
+            const formData = new FormData();
+            formData.append("id", itemId);
+
+            swal({
+                title: 'Silmek istediğine emin misin?',
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: "/admin/productcargo/delete",
+                            type: "POST",
+                            processData: false,
+                            contentType: false,
+                            data: formData,
+                            success: function () {
+                                swal("Silme İşlemi Başarılı");
+                                setTimeout(function () { window.location.reload(); }, 1500);
+                            },
+                            error: function () {
+                                swal("Silme işlemi başarılı olamadı. Tekrar Deneyiniz.");
+                            }
+                        });
+
+                        swal("Poof! Seçtiğin nesne veritabanından silindi!", {
+                            icon: "success",
+                        });
+                    } else {
+                        swal("Silme işlemi iptal edildi!");
+                    }
+                });
+        });
+    </script>
+}
+
+
+

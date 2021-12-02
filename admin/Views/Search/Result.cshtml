@@ -1,0 +1,85 @@
+﻿@model SearchViewModel
+
+@{
+    ViewData["Title"] = "Arama Sonuçları Listesi";
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Arama Sonuçları</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Arama Sonuçları</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-3">
+                    @if (Model.SearchResults.Count > 0)
+                    {
+                        @foreach (var item in Model.SearchResults)
+                        {
+                            <div class="callout callout-info">
+                                <span class="float-right">Sayfa</span>
+                                <a class="callout-link" href="@item.Permalink"><h5>@item.Title</h5></a>
+                                <p>
+                                    @item.Description
+                                </p>
+                            </div>
+                        }
+                    }
+                    @if (Model.Products.Count > 0)
+                    {
+                        @foreach (var item in Model.Products)
+                        {
+                            <div class="callout callout-success">
+                                <span class="float-right">Ürün</span>
+                                <a class="callout-link" asp-controller="product" asp-action="detail" asp-route-id="@item.Id"><h5>@item.Name</h5></a>
+                                @if (item.ProductImage.Count() != 0)
+                                {
+                                    <div>
+                                        <span class="d-block">Ürün Fotoğrafı</span>
+                                        <img width="60" height="60" class="p_image" src="/admin/img/product/@item.ProductImage.First().Image" alt="@item.Name" />
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>Lütfen farklı bir şeyler arayın. Aradığınız şeyi bulamadık!</p>
+                    }
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

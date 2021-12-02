@@ -1,0 +1,119 @@
+﻿@model Media
+
+@{
+    ViewData["Title"] = "Galeri İşlemleri";
+}
+
+@section style{
+    <link rel="stylesheet" href="~/admin-lte/plugins/bootstrap-slider/css/bootstrap-slider.min.css">
+    <link href="~/lib/cropperjs-master/dist/cropper.css" rel="stylesheet" />
+}
+@section script {
+    <script src="~/lib/cropperjs-master/dist/cropper.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/file-drop/jquery-filedrop.js"></script>
+    <script src="~/admin-lte/plugins/bootstrap-slider/bootstrap-slider.min.js"></script>
+    <script>
+        $(function () {
+            /* BOOTSTRAP SLIDER */
+            $('.slider').bootstrapSlider();
+        })
+    </script>
+    <script src="~/js/view/media-manage.js"></script>
+}
+
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Galeri</li>
+                        <li class="breadcrumb-item active">Fotoğraf Ekle</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <div class="card card-dark">
+                <div class="card-header">
+                    <h3 class="card-title m-0">Fotoğraf Ekle</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form class="cropForm" asp-controller="Media" asp-action="Manage" enctype="multipart/form-data">
+                        <!--Crop Modal-->
+                        <div class="cropLabel text-center p-5">
+                            <label class="label " data-toggle="tooltip" title="Resim Seç">
+                                <img class="drop-image" id="avatar" src="">
+                                <span class="drop-text "><i class="fa fa-arrow-circle-right"></i>Resim <span class="drop-text-bold">Yerleştirin</span> ya da <span class="drop-text-bold">Sürükleyin</span><i class="fa fa-arrow-circle-left"></i></span>
+                                <input type="file" class="sr-only" id="media-image-input" name="avatar" accept="image/*">
+                            </label>
+                        </div>
+                        <div class="crop-area container mb-2 d-none" id="crop-area">
+                            <div class="image-information-group mb-2">
+                                <div class="form-group mb-2">
+                                    <label>Dosya İsmi</label>
+                                    <input type="hidden" id="oldFileType" />
+                                    <input class="form-control" type="text" placeholder="Ornek" id="image-name" name="imageName" value="" />
+                                </div>
+                                <select class="form-control mb-2" id="fileProject" name="fileProject">
+                                    <option value="">Dosyanın Yükleneceği Projeyi Seçiniz</option>
+                                    <option value="admin">Yönetici Paneli</option>
+                                    <option value="www">Ön Taraf</option>
+                                </select>
+                                <select class="form-control mb-2" id="selectFilePath" name="selectFilePath">
+                                    <option value="">Dosya Konumu Seçiniz</option>
+                                    <option data-project="admin" value="cargo-company">Kargo Şirketleri (Panel için)</option>
+                                    <option data-project="admin" value="current">Müşteriler (Panel için)</option>
+                                    <option data-project="admin" value="staff">Personeller (Panel için)</option>
+                                    <option data-project="admin" value="admin">Yöneticiler (Panel için)</option>
+                                    <option data-project="admin" value="media">Medya (Panel için)</option>
+                                    <option data-project="www" value="media">Medya  (Ön Taraf)</option>
+                                    <option data-project="www" value="blog">Bloglar (Ön Taraf)</option>
+                                    <option data-project="www" value="project">Projeler  (Ön Taraf)</option>
+                                </select>
+                                <div class="form-group mt-2">
+                                    <p>Kalite Belirleyin</p>
+                                    <div class="slider-blue">
+                                        <input id="quality_degree__slider" name="quality_degree__slider" type="text" value="" class="slider form-control" data-slider-min="50" data-slider-max="90"
+                                               data-slider-orientation="horizontal"
+                                               data-slider-selection="before" data-slider-tooltip="show">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="img-container">
+                                <img id="cropped-image" src="https://avatars0.githubusercontent.com/u/3456749">
+                            </div>
+                            <div class="progress d-none">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                            </div>
+                            <div class="alert d-none" role="alert"></div>
+                            <div class="d-flex mt-4 justify-content-end">
+                                <button type="button" class="btn btn-secondary mr-2" id="cancel_btn">İptal Et</button>
+                                <button type="button" class="btn btn-success" id="crop">Kırp</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,47 @@
+﻿@model Admin
+
+@{
+    ViewData["Title"] = "Swapp-OFC Kayıt Onayla";
+    Layout = "_LayoutHome";
+}
+
+
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Kullanıcı Kaydı Onaylama</p>
+        <hr />
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">
+                @Html.Raw(ViewBag.ErrorMessage)
+            </div>
+        }
+        else if (ViewBag.SuccessMessage != null)
+        {
+            <div class="alert alert-success">
+                @Html.Raw(ViewBag.SuccessMessage)
+            </div>
+        }
+        <form asp-controller="home" asp-action="confirmation" method="post" class="login-form change-form">
+            <div class="input-group mb-3">
+                <input name="code" type="text" class="form-control" placeholder="Kodunuz">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-user"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- /.col -->
+                <div class="col-12 mb-2">
+                    <button type="button" class="btn btn-primary btn-block btn_submit">Onayla</button>
+                </div>
+                <!-- /.col -->
+                <div class="col-12">
+                    <a asp-controller="home" asp-action="login" class="btn btn-success btn-block"><i class="fa fa-angle-double-left"></i></a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- /.login-card-body -->
+</div>

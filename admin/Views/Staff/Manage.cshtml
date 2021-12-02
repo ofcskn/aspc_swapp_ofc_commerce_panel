@@ -1,0 +1,161 @@
+﻿@model Staff
+@inject IUnitOfWork _uow
+
+@{
+    ViewData["Title"] = "Personel İşlemleri";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Personeller</li>
+                        <li class="breadcrumb-item active">İşlemler</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    @if (Model.Id != 0)
+                    {
+                        <h3 class="card-title">Personel Güncelle</h3>
+                    }
+                    else
+                    {
+                        <h3 class="card-title">Personel Ekle</h3>
+                    }
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger d-block">
+                            @ViewBag.ErrorMessage
+                        </div>
+                    }
+                    <form asp-controller="staff" asp-action="manage" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Id" class="form-control">
+                        <input type="hidden" asp-for="Status" class="form-control">
+                        <input type="hidden" asp-for="Image" class="form-control">
+                        <div class="form-group">
+                            <label asp-for="Name">Adı</label>
+                            <input type="text" asp-for="Name" class="form-control">
+                            <span class="text-danger" asp-validation-for="Name"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Surname">Soyadı</label>
+                            <input type="text" asp-for="Surname" class="form-control">
+                            <span class="text-danger" asp-validation-for="Surname"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email">Email</label>
+                            <input type="email" asp-for="Email" class="form-control">
+                            <span class="text-danger" asp-validation-for="Email"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UserName">Kullanıcı Adı</label>
+                            <input type="text" asp-for="UserName" class="form-control">
+                            <span class="text-danger" asp-validation-for="UserName"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password">Şifre</label>
+                            <input name="Password" value="@Model.Password" type="password" class="form-control" />
+                            <span class="text-danger" asp-validation-for="Password"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="DepartmentId">Departman</label>
+                            <select asp-for="DepartmentId" class="form-control custom-select">
+                                <option value="" selected="" disabled="">Lütfen departman seçiniz</option>
+                                @foreach (var item in _uow.Department.GetAll())
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="DepartmentId"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PinCode">6 Haneli Pin Kodunuz</label>
+                            <input asp-for="PinCode" type="number" class="form-control" />
+                            <span class="text-danger" asp-validation-for="PinCode"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="StartDate">Giriş Tarihi</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="far fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <input type="date" asp-for="StartDate" class="form-control">
+                            </div>
+                            <span class="text-danger" asp-validation-for="StartDate"></span>
+                            <!-- /.input group -->
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EndDate">Çıkış Tarihi</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="far fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <input type="date" asp-for="EndDate" class="form-control">
+                                <span class="text-danger" asp-validation-for="EndDate"></span>
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                        <div class="form-group">
+                            <label>Fotoğraf</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Fotoğraf Yükle</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="Image" />
+                                    <label class="custom-file-label" name="Image">Dosya Seçin</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group border-dark mt-2 shadow-sm mb-2">
+                            @if (Model.Image != null)
+                            {
+                                <img class="w-25" src="/admin/img/staff/@Model.Image" alt="" />
+                            }
+                        </div>
+                        <button type="button" class="btn btn-primary btn_submit">Gönder</button>
+                        <a class="btn btn-info " asp-action="list"><i class="fas fa-reply mr-2"></i>Listeye Dön</a>
+                    </form>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

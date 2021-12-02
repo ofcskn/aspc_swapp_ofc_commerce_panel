@@ -1,0 +1,72 @@
+﻿/*---------------------------------------------------
+    RESPONSIVE CSS MAP
+    ------------------------->
+
+    |m1| - (max-width: 1430px)
+    |m2| - (max-width: 1199px)
+    |m3| - (max-width: 991px)
+    |m4| - (max-width: 767px)
+    |m5| - (max-width: 575px)
+    |m6| - (max-width: 500px)
+
+    -------------------------
+
+    |mm1| -(min-width: 992px) and (max-width: 1199px)
+    |mm2| -(min-width: 768px) and (max-width: 991px)
+    |mm3| -(min-width: 576px) and (max-width: 767px)
+
+    -------------------------
+    END OF RESPONSIVE CSS MAP
+---------------------------------------------------*/
+
+/* |m2| */
+@media (max-width: 1199px)
+{
+  
+}
+
+/* |m3| */
+@media (max-width: 991px)
+{
+
+   
+}
+
+/* |m5| */
+
+@media (max-width: 575px)
+{
+    .hero
+    {
+        padding-top: 43px;
+    }
+    .navbar-brand{
+        font-size:24px;
+    }
+    .section-padding{
+        padding:20px 0;
+    }
+}
+@media (max-width: 400px)
+{
+}
+/* |m6| */
+@media (max-width: 500px)
+{
+}
+
+
+/* |mm1| */
+@media (min-width: 992px) and (max-width: 1199px)
+{
+}
+
+/* |mm2| */
+@media (min-width: 768px) and (max-width: 991px)
+{
+}
+
+/* |mm3| */
+@media (min-width: 576px) and (max-width: 767px)
+{
+}

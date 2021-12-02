@@ -1,0 +1,620 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Anasayfa";
+}
+@section script{
+    <!-- ChartJS -->
+    <script src="~/admin-lte/plugins/chart.js/Chart.min.js"></script>
+    <!-- Sparkline -->
+    <script src="~/admin-lte/plugins/sparklines/sparkline.js"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="~/admin-lte/plugins/jquery-knob/jquery.knob.min.js"></script>
+    <!-- daterangepicker -->
+    <script src="~/admin-lte/plugins/moment/moment.min.js"></script>
+    <script src="~/admin-lte/plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="~/admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- overlayScrollbars -->
+    <script src="~/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- JQVMap -->
+    <script src="~/admin-lte/plugins/jqvmap/jquery.vmap.min.js"></script>
+    <script src="~/admin-lte/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="~/admin-lte/dist/js/pages/dashboard.js"></script>
+    <script>
+        $('#calendar-tr').datetimepicker({
+            format: 'L',
+            inline: true,
+            language: 'tr'
+        })
+        //-----------------------
+        //- MONTHLY SALES CHART -
+        //-----------------------
+
+        // Get context with jQuery - using jQuery's .get() method.
+        var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
+
+        var salesChartData = {
+            labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haz', 'Tem', 'Agu', 'Eyl', 'Ekim', 'Kas', 'Ara'],
+            datasets: [
+                {
+                    label: 'Alış',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: [28, 48, 40, 19, 86, 27, 90, 20, 35, 24, 85, 90]
+                },
+                {
+                    label: 'Satış',
+                    backgroundColor: 'rgba(210, 214, 222, 1)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    pointRadius: false,
+                    pointColor: 'rgba(210, 214, 222, 1)',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: [65, 59, 80, 81, 56, 55, 40, 10, 50, 68, 72, 20]
+                },
+            ]
+        }
+
+        var salesChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: true
+            },
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: true,
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: true,
+                    }
+                }]
+            }
+        }
+
+        // This will get the first returned node in the jQuery collection.
+        var salesChart = new Chart(salesChartCanvas, {
+            type: 'line',
+            data: salesChartData,
+            options: salesChartOptions
+        }
+        )
+
+                                      //---------------------------
+                                      //- END MONTHLY SALES CHART -
+                                      //---------------------------
+
+    </script>
+    <script src="~/js/todolist.js"></script>
+}
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Gösterge Paneli</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/index">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Gösterge Paneli</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid  py-2">
+            <!-- Small boxes (Stat box) -->
+            <!-- /.row -->
+            <!-- Main row -->
+            <div class="row">
+                <!-- Left col -->
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-12 mb-2"><a asp-controller="dashboard" asp-action="widgets" class="btn btn-sm btn-success text-white">Swappo İstatistik Kartları</a></div>
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>@Model.TotalVisitor</h3>
+                                    <p>Toplam Ziyaret Sayısı</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>@Model.TodayHomeVisitor</h3>
+                                    <p><b>Bugün </b> Anasayfa Ziyaret Sayısı</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-warning">
+                                <div class="inner">
+                                    <h3>@Model.TodayAdminVisitor</h3>
+
+                                    <p><b>Bugün</b> Panel Ziyaret Sayısı</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>@Model.TodayCurrentRegistered</h3>
+                                    <p><b>Bugün</b> Yeni Üye Sayısı</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">CPU Trafiği</span>
+                                    <span class="info-box-number">
+                                        10
+                                        <small>%</small>
+                                    </span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-door-open"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Bugün Giriş Yapan Üye</span>
+                                    <span class="info-box-number">@Model.NewLoginForCurrent</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <!-- fix for small devices only -->
+                        <div class="clearfix hidden-md-up"></div>
+
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text"><b>Bugünkü</b> Satışlar</span>
+                                    <span class="info-box-number">@Model.TotalSalesForToday</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text"><b>Bu Hafta</b> Yeni Üyeler</span>
+                                    <span class="info-box-number">@Model.NewMemberForWeek</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Aylık Satış Raporu</h5>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p class="text-center">
+                                        @{
+                                            var today = DateTime.Now;
+                                        }
+                                        Satışlar: <strong> 01 Ocak @today.Year - @today.ToString("D")</strong>
+                                    </p>
+
+                                    <div class="chart">
+                                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <!-- Sales Chart Canvas -->
+                                        <div class="chart">
+                                            <!-- Sales Chart Canvas -->
+                                            <canvas id="salesChart" style="height: 250px;"></canvas>
+                                        </div>
+                                    </div>
+                                    <!-- /.chart-responsive -->
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-md-4">
+                                    <p class="text-center">
+                                        <strong>Durum</strong>
+                                    </p>
+
+                                    <div class="progress-group">
+                                        Stok Sayısına Göre Satılan Ürün Sayısı
+                                        <span class="float-right"><b>@Model.SellingProducts </b>/@Model.GettingProducts</span>
+                                        <div class="progress progress-sm">
+                                            @{
+                                                var percentselling = (Model.SellingProducts * 100) / Model.GettingProducts + "%";
+                                            }
+                                            <div class="progress-bar bg-primary" style="width: @percentselling"></div>
+                                        </div>
+                                    </div>
+                                    <!-- /.progress-group -->
+                                    <!-- /.progress-group -->
+                                    <div class="progress-group">
+                                        İade Sayısı
+                                        <span class="float-right"><b>@(Model.GettingProducts /5) </b>/@Model.GettingProducts</span>
+                                        <div class="progress progress-sm">
+                                            <div class="progress-bar bg-warning" style="width: 50%"></div>
+                                        </div>
+                                    </div>
+                                    <!-- /.progress-group -->
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <section class="col-lg-7 connectedSortable">
+
+                    <!-- TO DO List -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title float-left  mt-1">
+                                <i class="ion ion-clipboard mr-1"></i>
+                                Yapılacaklar Listem
+                            </h3>
+                            <a class="btn btn-success float-right p-1" asp-controller="todolist" asp-action="list">Tümü</a>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <ul class="todo-list" data-widget="todo-list">
+                                @foreach (var item in Model.ToDoLists)
+                                {
+
+                                    string timeAgoText = null;
+                                    string timeAgoClass = null;
+                                    var timeSpan = DateTime.Now - item.StartDate;
+
+                                    if (timeSpan <= TimeSpan.FromSeconds(60))
+                                    {
+                                        timeAgoClass = "badge-success";
+                                        timeAgoText = string.Format("{0} saniye önce", timeSpan.Seconds);
+                                    }
+                                    else if (timeSpan <= TimeSpan.FromMinutes(60))
+                                    {
+                                        timeAgoClass = "badge-success";
+                                        timeAgoText = timeSpan.Minutes > 1 ? String.Format("{0} dakika önce", timeSpan.Minutes) : "bir dakika önce";
+                                    }
+                                    else if (timeSpan <= TimeSpan.FromHours(24))
+                                    {
+                                        timeAgoClass = "badge-info";
+                                        timeAgoText = timeSpan.Hours > 1 ? String.Format("{0} saat önce", timeSpan.Hours) : "bir saat önce";
+                                    }
+                                    else if (timeSpan <= TimeSpan.FromDays(30))
+                                    {
+                                        timeAgoClass = "badge-dark";
+                                        timeAgoText = timeSpan.Days > 1 ? String.Format("{0} gün önce", timeSpan.Days) : "dün";
+                                    }
+                                    else if (timeSpan <= TimeSpan.FromDays(365))
+                                    {
+                                        timeAgoClass = "badge-warning";
+                                        timeAgoText = timeSpan.Days > 30 ? String.Format("{0} ay önce", timeSpan.Days / 30) : "bir ay önce";
+                                    }
+                                    else
+                                    {
+                                        timeAgoClass = "badge-danger";
+                                        timeAgoText = timeSpan.Days > 365 ? String.Format("{0} yıl önce", timeSpan.Days / 365) : "bir yıl önce";
+                                    }
+                                    <li>
+                                        <div class="row">
+                                            <!-- checkbox and todo text -->
+                                            <div class="col-1 icheck-primary d-flex justify-content-center">
+                                                <input data-id="@item.Id" type="checkbox" value="" @(Convert.ToBoolean(item.Enabled) ? "checked" : string.Empty) class="checkToDo checkbox" name="todo_@item.Id" id="todoCheck_@item.Id">
+                                                <label for="todoCheck_@item.Id"></label>
+                                            </div>
+                                            <div class="col-10 ">
+                                                <span class="toDoText" data-editable data-id="@item.Id">@item.Goal</span>
+                                                <!-- Emphasis label -->
+                                                <small class=" badge @timeAgoClass"><i class="far fa-clock"></i> @timeAgoText</small>
+                                            </div>
+                                            <!-- General tools such as edit or delete-->
+                                            <div class="tools col-1">
+                                                <a href="javascript:;" data-id="@item.Id" class="deleteToDoBtn btn p-1 btn-danger"><i class="fa fa-trash"></i></a>
+                                            </div>
+                                        </div>
+
+                                    </li>
+                                }
+
+                            </ul>
+                            <div class="form-group form-button row mx-0 mt-3">
+                                <input name="toDoInput" id="toDoText" type="text" class="col-sm-10 form-control" placeholder="Kendinize hedef belirleyin." />
+                                <div class="col-sm-2">
+                                    <a id="addToDo" href="javascript:;" class="list-create-btn btn btn-info w-100 "><i class="to-do-icon fa fa-plus "></i>Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header border-transparent">
+                            <h3 class="card-title">Son Satışlar</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table m-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Sipariş Id</th>
+                                            <th>Ürün</th>
+                                            <th>Satış Fiyatı</th>
+                                            <th>Miktarı</th>
+                                            <th>Fatura</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.LatestSaleProcess)
+                                        {
+                                            var p = Model.AllProducts.FirstOrDefault(p => p.Id == item.ProductId);
+                                            <tr>
+                                                <td><a class="text-black-50" asp-controller="saleprocess" asp-action="manage" asp-route-id="@item.Id">@p.Barcode</a></td>
+                                                <td><a class="text-bold text-dark" asp-controller="saleprocess" asp-action="manage" asp-route-id="@item.Id">@p.Name</a></td>
+                                                <td><span class="badge badge-success">@item.Price</span></td>
+                                                <td><span class="badge badge-dark">@item.Amount</span></td>
+                                                <td>
+                                                    <a asp-controller="invoice" asp-action="detail" asp-route-id="@item.InvoiceId">Faturaya Git</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer clearfix">
+                            <a asp-controller="saleprocess" asp-action="manage" class="btn btn-sm btn-info float-left">Yeni Satış</a>
+                            <a asp-controller="saleprocess" asp-action="list" class="btn btn-sm btn-secondary float-right">Tümünü Gör</a>
+                        </div>
+                        <!-- /.card-footer -->
+                    </div>
+                </section>
+                <!-- /.Left col -->
+                <!-- right col (We are only adding the ID to make the widgets sortable)-->
+                <section class="col-lg-5 connectedSortable">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Son Katılan Personeller</h3>
+
+                            <div class="card-tools">
+                                <span class="badge badge-danger">@Model.LatestStaff.Count() Yeni Personel</span>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <ul class="users-list clearfix">
+                                @foreach (var item in Model.LatestStaff)
+                                {
+                                    <li>
+                                        <img src="~/img/staff/@item.Image" alt="@item.Name Fotoğrafı">
+                                        <span class="users-list-name" href="#">@item.Name @item.Surname</span>
+                                        <span class="users-list-date">@item.StartDate.ToString("d")</span>
+                                    </li>
+                                }
+                            </ul>
+                            <!-- /.users-list -->
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer text-center">
+                            <a asp-controller="staff" asp-action="list">Tümünü Gör</a>
+                        </div>
+                        <!-- /.card-footer -->
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Son Eklenen Ürünler</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <ul class="products-list product-list-in-card pl-2 pr-2">
+                                @foreach (var item in Model.LatestProducts)
+                                {
+                                    <li class="item">
+                                        <div class="product-info">
+                                            <a asp-controller="product" asp-action="detail" asp-route-id="@item.Id" class="product-title">
+                                                @item.Name
+                                                <span class="badge badge-warning float-right">@item.SalePrice TL</span>
+                                            </a>
+                                            <span class="product-description">
+                                                @item.Stock Stok Ürün
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <!-- /.item -->
+                                }
+                            </ul>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer text-center">
+                            <a asp-controller="product" asp-action="list" class="uppercase">Tümünü Gör</a>
+                        </div>
+                        <!-- /.card-footer -->
+                    </div>
+
+                    <!-- Calendar -->
+                    <div class="card bg-gradient-success">
+                        <div class="card-header border-0">
+
+                            <h3 class="card-title">
+                                <i class="far fa-calendar-alt"></i>
+                                Takvim
+                            </h3>
+                            <!-- tools card -->
+                            <div class="card-tools">
+                                <!-- button with a dropdown -->
+                                <a class="btn btn-outline-light py-1 mr-2" asp-controller="calendar">
+                                    Büyük Takvime Git
+                                </a>
+                                <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <!-- /. tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body pt-0">
+                            <!--The calendar -->
+                            <div id="calendar-tr" style="width: 100%"></div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- Map card -->
+                    <div class="card bg-gradient-primary">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">
+                                <i class="fas fa-map-marker-alt mr-1"></i>
+                                Visitors
+                            </h3>
+                            <!-- card tools -->
+                            <div class="card-tools">
+                                <button type="button"
+                                        class="btn btn-primary btn-sm daterange"
+                                        data-toggle="tooltip"
+                                        title="Date range">
+                                    <i class="far fa-calendar-alt"></i>
+                                </button>
+                                <button type="button"
+                                        class="btn btn-primary btn-sm"
+                                        data-card-widget="collapse"
+                                        data-toggle="tooltip"
+                                        title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <div class="card-body">
+                            <div id="world-map" style="height: 250px; width: 100%;"></div>
+                        </div>
+                        <!-- /.card-body-->
+                        <div class="card-footer bg-transparent">
+                            <div class="row">
+                                <div class="col-4 text-center">
+                                    <div id="sparkline-1"></div>
+                                    <div class="text-white">Visitors</div>
+                                </div>
+                                <!-- ./col -->
+                                <div class="col-4 text-center">
+                                    <div id="sparkline-2"></div>
+                                    <div class="text-white">Online</div>
+                                </div>
+                                <!-- ./col -->
+                                <div class="col-4 text-center">
+                                    <div id="sparkline-3"></div>
+                                    <div class="text-white">Sales</div>
+                                </div>
+                                <!-- ./col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                    </div>
+
+                    <!-- /.card -->
+                </section>
+                <!-- right col -->
+            </div>
+            <!-- /.row (main row) -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

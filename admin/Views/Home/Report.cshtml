@@ -1,0 +1,71 @@
+﻿@model Contact
+
+@{
+    ViewData["Title"] = "Swapp-OFC Sorun Bildir/Öneri Gönder";
+    Layout = "_LayoutHome";
+}
+
+
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Sorun Bildir/Öneri Gönder</p>
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">
+                @Html.Raw(ViewBag.ErrorMessage)
+            </div>
+        }
+        else if (ViewBag.SuccessMessage != null)
+        {
+            <div class="alert alert-success">
+                @Html.Raw(ViewBag.SuccessMessage)
+            </div>
+        }
+    <form asp-controller="home" asp-action="report" method="post" class="login-form change-form">
+        <div asp-validation-summary="All"></div>
+        <div class="input-group mb-3">
+            <input asp-for="Name" type="text" class="form-control" placeholder="İsminiz - Soyisminiz">
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-font"></span>
+                </div>
+            </div>
+        </div>
+        <div class="input-group mb-3">
+            <input asp-for="Subject" type="text" class="form-control" placeholder="Konu Belirtin">
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-bold"></span>
+                </div>
+            </div>
+        </div>
+        <div class="input-group mb-3">
+            <input asp-for="Email" type="text" class="form-control" placeholder="E-Posta Adresiniz">
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-envelope"></span>
+                </div>
+            </div>
+        </div>
+        <div class="input-group mb-3">
+            <textarea asp-for="Message" rows="5" class="form-control" placeholder="Mesajınızı Bırakın"></textarea>
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-sticky-note"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- /.col -->
+            <div class="col-12 mb-2">
+                <button type="button" class="btn btn-primary btn-block btn_submit">Gönder</button>
+            </div>
+            <!-- /.col -->
+            <div class="col-12">
+                <a asp-controller="home" asp-action="login" class="btn btn-success btn-block"><i class="fa fa-angle-double-left"></i></a>
+            </div>
+        </div>
+    </form>
+    </div>
+    <!-- /.login-card-body -->
+</div>

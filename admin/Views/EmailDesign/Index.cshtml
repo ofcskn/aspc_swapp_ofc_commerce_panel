@@ -1,0 +1,140 @@
+﻿@model EmailViewModel
+@{
+    ViewData["Title"] = "Eposta Gönder";
+}
+@section style{
+    <style>
+        .card-body::after, .card-footer::after, .card-header::after
+        {
+            display: none;
+        }
+    </style>
+}
+@section script{
+    <script>
+        $("#sendMail").on("click", function () {
+            $(this).addClass("non-click-link");
+            const id = $(this).data("id");
+            const filter = $(this).data("filter");
+            const formData = new FormData();
+            formData.append("id", id);
+            formData.append("filter", filter);
+            $.ajax({
+                url: "/admin/emaildesign/post",
+                method: 'POST',
+                data: formData,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    swal("Heey", "Mail gönderildi.", "success");
+                    setTimeout(
+                        function () {
+                            window.location.replace(location.protocol + "//" + location.host + "/admin/invoice/list");
+                        }, 1500);
+                },
+                error: function () {
+                    $(this).removeClass("non-click-link");
+                },
+            });
+        });
+        $(".textarea").summernote();
+    </script>
+}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Email</li>
+                        <li class="breadcrumb-item active">Fatura</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-dark">
+                <div class="card-header d-flex align-items-center" style="justify-content:space-between;">
+                    <h3 class="card-title text-white">Email Gönder</h3>
+                    <div class="card-tools">
+                        @if (Model.Invoice != null)
+                        {
+                            <a id="sendMail" href="javascript:;" data-filter="@Model.Type" data-id="@Model.Invoice.Id" class="btn btn-success">Postala</a>
+                        }
+                        @*@if (Model.Type != "normal")
+                        {
+                            <a id="sendMail" href="javascript:;" data-filter="@Model.Type" class="btn btn-success">Tüm Abonelere Postala</a>
+                        }*@
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+
+                    @if (Model.Type == "invoice")
+                    {
+                        <div class="non-click-area">
+                            <partial name="~/Views/EmailDesign/_InvoiceEmail.cshtml" model="Model.Invoice" />
+                        </div>
+                    }
+                    @if (Model.Type == "confirm")
+                    {
+                        <div class="non-click-area">
+                            <partial name="~/Views/EmailDesign/_ConfirmEmail.cshtml" model="Model.Invoice" />
+                        </div>
+                    }
+                    @if (Model.Type == "normals")
+                    {
+                        <partial name="~/Views/EmailDesign/_NormalEmail.cshtml" model="Model" />
+                    }
+                    @if (Model.Type == "normal")
+                    {
+                        <form asp-controller="EmailDesign" asp-action="post" asp-route-filter="normal" role="form" enctype="multipart/form-data">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Konu</label>
+                                    <input type="text" name="Subject" class="form-control" placeholder="Konu">
+                                </div>
+                                <div class="form-group">
+                                    <label>Mail Detayı</label>
+                                    <textarea class="textarea" name="BodyText" placeholder="Mail Detayı"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Dosya Eklemek İstersen</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input name="Files" type="file" class="custom-file-input" id="exampleInputFile">
+                                            <label class="custom-file-label" for="exampleInputFile">Dosya Seç</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Tüm Abonelere Gönder</button>
+                            </div>
+                        </form>
+                    }
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

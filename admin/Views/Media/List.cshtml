@@ -1,0 +1,253 @@
+﻿@model PaginatedList<Media>
+@inject IUnitOfWork _uow
+@{
+    ViewData["Title"] = "Galeri";
+    var list = _uow.Media.GetAll();
+}
+@section style{
+
+    <link rel="stylesheet" href="~/admin-lte/plugins/bootstrap-slider/css/bootstrap-slider.min.css">
+    <link rel="stylesheet" href="~/lib/thumber/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/lib/thumber/css/owl.theme.default.min.css">
+
+    <link rel="stylesheet" href="~/lib/thumber/css/bootstrap-datepicker.css">
+
+    <link rel="stylesheet" href="~/lib/thumber/fonts/flaticon/font/flaticon.css">
+
+    <link rel="stylesheet" href="~/lib/thumber/css/aos.css">
+    <link rel="stylesheet" href="~/lib/thumber/css/jquery.scrollbar.css">
+    <link rel="stylesheet" href="~/lib/thumber/css/fancybox.min.css">
+    <link rel="stylesheet" href="~/lib/thumber/css/swiper.min.css">
+
+    <link rel="stylesheet" href="~/lib/thumber/css/style.css">
+    <link href="~/lib/cropperjs-master/dist/cropper.css" rel="stylesheet" />
+    <link href="~/css/media.css" rel="stylesheet" />
+    <style>
+        .card-body::after, .card-footer::after, .card-header::after
+        {
+            display: none;
+        }
+    </style>
+}
+@section script{
+    <script src="~/admin-lte/plugins/bootstrap-slider/bootstrap-slider.min.js"></script>
+    <script src="~/lib/thumber/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="~/lib/thumber/js/jquery-ui.js"></script>
+    <script src="~/lib/thumber/js/popper.min.js"></script>
+    <script src="~/lib/thumber/js/bootstrap.min.js"></script>
+    <script src="~/lib/thumber/js/owl.carousel.min.js"></script>
+    <script src="~/lib/thumber/js/jquery.countdown.min.js"></script>
+    <script src="~/lib/thumber/js/aos.js"></script>
+
+    <script src="~/lib/thumber/js/jquery.fancybox.min.js"></script>
+    <script src="~/lib/thumber/js/swiper.min.js"></script>
+    <script src="~/lib/thumber/js/jquery.scrollbar.js"></script>
+    <script src="~/lib/thumber/js/main.js"></script>
+
+    <script src="~/lib/cropperjs-master/dist/cropper.js"></script>
+    <script>
+        $(function () {
+            /* BOOTSTRAP SLIDER */
+            $('.slider').bootstrapSlider();
+        })
+
+    </script>
+    <script src="~/js/view/media-list.js"></script>
+}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Galeri</li>
+                        <li class="breadcrumb-item active">Fotoğraf Listesi</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <div class="card card-dark">
+                <div class="card-header  row justify-content-between align-items-center">
+                    <div class="action-buttons row  align-items-center">
+                        <h3 class="card-title m-0">Fotoğraflar</h3>
+                        <button id="deleteTopBtn" type="button" class="btn-danger btn ml-2">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                        <a id="selectBtn" class="btn btn-danger ml-2" href="javascript:;">Seç</a>
+                        <a id="cancelBtn" class="btn btn-danger ml-2" href="javascript:;">İptal Et</a>
+                    </div>
+                    <div class="card-tools">
+                        <a asp-controller="Media" asp-action="manage" class="btn btn-success ml-2"><i class="fa fa-plus"></i></a>
+
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="site-wrap">
+                    <main class="main-content">
+                        <div class="container-fluid photos">
+                            @if (list.Count() == 0)
+                            {
+                                <div class="no-image">
+                                    <h4 class="no-image-text">Yüklenmiş fotoğrafınız bulunmamaktadır.</h4>
+                                    <a asp-controller="Media" asp-action="manage" class="btn btn-success">Yeni Resim Ekle</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row align-items-stretch">
+                                    @foreach (var image in Model)
+                                    {
+                                        var filePath = image.Path + image.FileNames;
+                                        if (image.Project != "www")
+                                        {
+                                            filePath = "/" + image.Project + "/" + filePath;
+                                        }
+                                        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
+                                            <input class="selectBox" type="checkbox" name="selectCheckBox" data-filename="@image.FileNames" />
+                                            <div class="d-block photo-item">
+                                                <img src="@filePath" alt="Image" class="img-fluid">
+                                                <div class="photo-text-more">
+                                                    <a href="@filePath" data-fancybox="gallery" class="btn btn-secondary mr-2"><i class="fa fa-search text-white"></i></a>
+                                                    <a href="javascript:;" data-filename="@image.FileNames" data-project="@image.Project" data-filepath="@image.Path" class="mr-2 btn btn-danger deleteModalBtn"><i class=" fa fa-trash text-white"></i></a>
+                                                    <a href="javascript:;" data-filename="@image.FileNames" data-project="@image.Project" data-folder="@image.Folder" data-filepath="@image.Path" class="btn btn-success cropModalBtn "><i class="fa fa-crop text-white"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="pagination-button col-sm-12 m-0">
+                                    @{
+                                        var prevDisabled = !Model.PreviousPage ? "disabled" : "";
+                                        var nextDisabled = !Model.NextPage ? "disabled" : "";
+                                    }
+                                    <a asp-action="list" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                                       class="btn btn-secondary @prevDisabled">Geri</a>
+                                    <a asp-action="list" asp-route-pageNumber="@(Model.PageIndex + 1)"
+                                       class="btn btn-secondary @nextDisabled">İleri</a>
+                                </div>
+                            }
+                            <!--Crop Confirm Modal-->
+                            <div class="modal fade" id="cropModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalLabel">Resmi Kırp</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" id="image-name" value="">
+                                            <input type="hidden" id="oldFilePath" value="">
+                                            <div class="form-group mt-2">
+                                                <p>Kalite Belirleyin</p>
+                                                <div class="slider-blue">
+                                                    <input id="quality_degree__slider" type="text" value="" class="slider form-control" data-slider-min="50" data-slider-max="90"
+                                                           data-slider-orientation="horizontal"
+                                                           data-slider-selection="before" data-slider-tooltip="show">
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            <div class="img-container">
+                                                <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
+                                            </div>
+                                            <div class="new-image-name-group d-none">
+                                                <div class=" form-group mb-2">
+                                                    <label>Dosya İsmi</label>
+                                                    <input class="form-control" type="text" placeholder="Ornek" id="new-image-name" name="newImageName" value="" />
+                                                </div>
+                                                <select class="form-control mb-2" id="fileProject" name="fileProject">
+                                                    <option value="">Dosyanın Yükleneceği Projeyi Seçiniz</option>
+                                                    <option value="admin">Yönetici Paneli</option>
+                                                    <option value="www">Ön Taraf</option>
+                                                </select>
+                                                <select class="form-control mb-2" id="selectFilePath" name="selectFilePath">
+                                                    <option value="">Dosya Konumu Seçiniz</option>
+                                                    <option data-project="admin" value="cargo-company">Kargo Şirketleri (Panel için)</option>
+                                                    <option data-project="admin" value="current">Müşteriler (Panel için)</option>
+                                                    <option data-project="admin" value="staff">Personeller (Panel için)</option>
+                                                    <option data-project="admin" value="admin">Yöneticiler (Panel için)</option>
+                                                    <option data-project="admin" value="media">Medya (Panel için)</option>
+                                                    <option data-project="www" value="media">Medya  (Ön Taraf)</option>
+                                                    <option data-project="www" value="blog">Bloglar (Ön Taraf)</option>
+                                                    <option data-project="www" value="project">Projeler  (Ön Taraf)</option>
+                                                </select>
+                                            </div>
+                                            <div class="cropped-img-container">
+                                                <img id="croppedImage" src="">
+                                            </div>
+                                            <div class="alert" role="alert"></div>
+                                        </div>
+                                        <div class="modal-progress">
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-admin-grey" data-dismiss="modal">İptal Et</button>
+                                            <button type="button" class="btn btn-outline-admin" id="cropBtn">Önizle</button>
+                                            <button type="button" class="btn btn-success" id="changeBtn">Değiştir</button>
+                                            <button type="button" class="btn btn-admin" id="resultConfirmBtn">Ekle</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Delete Confirm Modal-->
+                            <div class="deleteConfirmModal modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteConfirmModalLabel">Resmi Sil</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" class="deleteFilePath" value="" />
+                                            <img class="img-modal confirmImg" src="" alt="">
+                                            <h6 class="delete-text">Onayladığınız taktirde fotoğraf galeriden silinecek. Devam edecek misiniz?</h6>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-admin-grey" data-dismiss="modal">Galeriye Dön</button>
+                                            <button type="button" value="" id="btnDelete" class="btn btn-outline-danger"><i class="fa fa-trash"></i></button>
+                                            <button type="button" value="" id="btnDeleteSelect" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row justify-content-center">
+                                <div class="col-md-12 text-center py-5">
+                                    <p>
+                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                        Copyright &copy;
+                                        <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

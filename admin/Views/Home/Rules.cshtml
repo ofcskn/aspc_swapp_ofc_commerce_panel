@@ -1,0 +1,29 @@
+﻿@model Admin
+
+@{
+    ViewData["Title"] = "Swapp-OFC Kullanıcı Kaydı Oluştur";
+    Layout = "_LayoutHome";
+}
+
+
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Kullanıcı Kaydı</p>
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">
+                @Html.Raw(ViewBag.ErrorMessage)
+            </div>
+        }
+        else if (ViewBag.SuccessMessage != null)
+        {
+            <div class="alert alert-success">
+                @Html.Raw(ViewBag.SuccessMessage)
+            </div>
+        }
+        <div class="">
+            <h2>Kurallar</h2>
+        </div>
+    </div>
+    <!-- /.login-card-body -->
+</div>

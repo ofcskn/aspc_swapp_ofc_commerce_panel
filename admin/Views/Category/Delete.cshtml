@@ -1,0 +1,66 @@
+﻿@model Category
+
+@{
+    ViewData["Title"] = "Kategori Sil";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Kategori</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Kategoriler</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="category" asp-action="delete" class="form-horizontal style-form" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="form-group mb-2">
+                            <b>@Model.Name.ToUpper()</b> kategorisini silmek istiyor musunuz?
+                        </div>
+                        <div class="form-group form-button">
+                            <button type="button" class="btn btn-danger btn_submit">Sil</button>
+                            <a asp-controller="category" asp-action="list" class="btn btn-info">Geri Dön</a>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.modal -->
+
+

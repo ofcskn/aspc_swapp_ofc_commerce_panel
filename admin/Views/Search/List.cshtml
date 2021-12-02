@@ -1,0 +1,131 @@
+﻿@model PaginatedList<Search>
+@{
+    ViewData["Title"] = "Arama Sayfaları Listesi";
+
+    var prevDisabled = !Model.PreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.NextPage ? "disabled" : "";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Arama Sayfaları</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Arama Sayfaları</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped projects">
+                            <thead>
+                                <tr>
+                                    <th>Başlık</th>
+                                    <th>Açıklama</th>
+                                    <th>Link</th>
+                                    <th>
+                                        İşlemler
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() != 0)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Title</td>
+                                            <td>@item.Description</td>
+                                            <td>@item.Permalink</td>
+                                            <td class="project-actions text-right">
+                                                <a class="btn btn-info " asp-action="manage" asp-route-id="@item.Id"><i class="fa fa-pencil-alt"></i></a>
+                                                <a class="btn btn-danger delete" data-id="@item.Id"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="20">
+                                            <p class="my-3">Henüz eklenmiş veri bulunmamaktadır.</p>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <div class="pagination-button float-right">
+                <a asp-action="List" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   class="btn btn-success @prevDisabled">Geri</a>
+                <a asp-action="List" asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   class="btn btn-success @nextDisabled">İleri</a>
+            </div>
+            <a asp-action="manage" type="button" class="btn btn-success">
+                Ekle
+            </a>
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section script{
+    <script>
+        $(".delete").on("click", function () {
+            const itemId = $(this).data("id");
+
+            const formData = new FormData();
+            formData.append("id", itemId);
+
+            $.ajax({
+                url: "/admin/search/delete",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function () {
+                    swal("Silme İşlemi Başarılı");
+                    setTimeout(function () { window.location.reload(); }, 1500);
+                },
+                error: function () {
+                    swal("Silme işlemi başarılı olamadı. Tekrar Deneyiniz.");
+                }
+            });
+
+        });
+    </script>
+}

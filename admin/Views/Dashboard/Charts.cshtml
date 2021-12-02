@@ -1,0 +1,498 @@
+﻿@model StatisticViewModel
+@inject IUnitOfWork _uow
+
+@{
+    ViewData["Title"] = "Genel İstatistikler";
+    var last7Days = _uow.PageAnalysis.GetDayByLastWeek();
+    var visitorDataLast7Days = last7Days;
+}
+
+@section style{
+    <link href="~/lib/chart.js/dist/Chart.css" rel="stylesheet" />
+    <style>
+        .myChart
+        {
+            width: 100%;
+            height: 300px;
+        }
+
+
+        .site-report
+        {
+            width: auto;
+        }
+
+
+        .weather
+        {
+            margin: 50px 0;
+        }
+
+            .weather .weatherwidget
+            {
+                margin-bottom: 20px;
+            }
+
+        .widget-list
+        {
+            margin-top: 20px;
+            margin-bottom: 60px;
+        }
+
+            .widget-list .widget-box.red
+            {
+                background: #d8002e;
+            }
+
+            .widget-list .widget-box.blue
+            {
+                background: #0083b5;
+            }
+
+            .widget-list .widget-box.green
+            {
+                background: #00d071;
+            }
+
+            .widget-list .widget-box.black
+            {
+                background: #585858;
+            }
+
+            .widget-list .widget-box.purple
+            {
+                background: #d800a5;
+            }
+
+            .widget-list .widget-box
+            {
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+                .widget-list .widget-box .widget-content
+                {
+                    padding: 40px;
+                    text-align: center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                }
+
+                .widget-list .widget-box h2
+                {
+                    font-size: 24px;
+                }
+
+                .widget-list .widget-box .widget-icon
+                {
+                    font-size: 26px;
+                    margin-bottom: 20px;
+                }
+
+                .widget-list .widget-box span
+                {
+                    font-weight: 400;
+                    font-size: 24px;
+                }
+    </style>
+}
+@section script{
+    @*<script src="~/lib/world-map-trial/mapdata.js"></script>
+        <script src="~/lib/world-map-trial/worldmap.js"></script>*@
+    <script src="~/lib/chart.js/dist/Chart.js"></script>
+    <script>
+        var visitorLabels = @Html.Raw(Json.Serialize(last7Days.Reverse()));
+        var visitorData = @Html.Raw(Json.Serialize(visitorDataLast7Days.Reverse()));
+        var last6Month = @Html.Raw(Json.Serialize(Model.LastXMonth.Reverse()));
+        var last6MonthProfit = @Html.Raw(Json.Serialize(Model.LastXMonthProfit.Reverse()));
+        var last6MonthLoss = @Html.Raw(Json.Serialize(Model.LastXMonthLoss.Reverse()));
+        //Graphic 3
+        var last7Day = @Html.Raw(Json.Serialize(Model.Last7Day.Reverse()));
+        var last7DayVisitorsWww = @Html.Raw(Json.Serialize(Model.last7DayVisitorsWww.Reverse()));
+        var last7DayVisitorsAdmin = @Html.Raw(Json.Serialize(Model.last7DayVisitorsAdmin.Reverse()));
+
+        //For Visitor Graphic
+        var lastXDay = @Html.Raw(Json.Serialize(Model.LastXDay.Reverse()));
+        var tvThisWeek = @Html.Raw(Json.Serialize(Model.TVThisWeek.Reverse()));
+        var tvPreviousWeek = @Html.Raw(Json.Serialize(Model.TVPreviousWeek.Reverse()));
+
+        $(function () {
+            'use strict'
+
+            var ticksStyle = {
+                fontColor: '#495057',
+                fontStyle: 'bold'
+            }
+
+            var mode = 'index'
+            var intersect = true
+
+            var $salesChart = $('#swapp-sales-chart')
+            var salesChart = new Chart($salesChart, {
+                type: 'bar',
+                data: {
+                    labels: last6Month,
+                    datasets: [
+                        {
+                            backgroundColor: '#007bff',
+                            borderColor: '#007bff',
+                            data: last6MonthProfit
+                        },
+                        {
+                            backgroundColor: '#ced4da',
+                            borderColor: '#ced4da',
+                            data: last6MonthLoss
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                        mode: mode,
+                        intersect: intersect
+                    },
+                    hover: {
+                        mode: mode,
+                        intersect: intersect
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            // display: false,
+                            gridLines: {
+                                display: true,
+                                lineWidth: '4px',
+                                color: 'rgba(0, 0, 0, .2)',
+                                zeroLineColor: 'transparent'
+                            },
+                            ticks: $.extend({
+                                beginAtZero: true,
+
+                                // Include a dollar sign in the ticks
+                                callback: function (value, index, values) {
+                                    if (value >= 1000) {
+                                        value /= 1000
+                                        value += 'k'
+                                    }
+                                    return '$' + value
+                                }
+                            }, ticksStyle)
+                        }],
+                        xAxes: [{
+                            display: true,
+                            gridLines: {
+                                display: false
+                            },
+                            ticks: ticksStyle
+                        }]
+                    }
+                }
+            })
+
+            var $visitorsChart = $('#swapp-visitors-chart')
+            var visitorsChart = new Chart($visitorsChart, {
+                data: {
+                    labels: lastXDay,
+                    datasets: [{
+                        type: 'line',
+                        data: tvThisWeek,
+                        backgroundColor: 'transparent',
+                        borderColor: '#007bff',
+                        pointBorderColor: '#007bff',
+                        pointBackgroundColor: '#007bff',
+                        fill: false
+                        // pointHoverBackgroundColor: '#007bff',
+                        // pointHoverBorderColor    : '#007bff'
+                    },
+                    {
+                        type: 'line',
+                        data: tvPreviousWeek,
+                        backgroundColor: 'tansparent',
+                        borderColor: '#ced4da',
+                        pointBorderColor: '#ced4da',
+                        pointBackgroundColor: '#ced4da',
+                        fill: false
+                        // pointHoverBackgroundColor: '#ced4da',
+                        // pointHoverBorderColor    : '#ced4da'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                        mode: mode,
+                        intersect: intersect
+                    },
+                    hover: {
+                        mode: mode,
+                        intersect: intersect
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            // display: false,
+                            gridLines: {
+                                display: true,
+                                lineWidth: '4px',
+                                color: 'rgba(0, 0, 0, .2)',
+                                zeroLineColor: 'transparent'
+                            },
+                            ticks: $.extend({
+                                beginAtZero: true,
+                                suggestedMax: 200
+                            }, ticksStyle)
+                        }],
+                        xAxes: [{
+                            display: true,
+                            gridLines: {
+                                display: false
+                            },
+                            ticks: ticksStyle
+                        }]
+                    }
+                }
+            })
+
+            var $visitorsChartByPage = $('#swapp-visitor-chart-by-page')
+            var visitorsChartByPage = new Chart($visitorsChartByPage, {
+                    type: 'bar',
+                data: {
+                    labels: last7Day,
+                        datasets: [
+                            {
+                                backgroundColor: '#00a7b9',
+                                borderColor: '#00a7b9',
+                                data: last7DayVisitorsWww
+                            },
+                            {
+                                backgroundColor: '#5300a5',
+                                borderColor: '#5300a5',
+                                data: last7DayVisitorsAdmin
+                            }
+                        ]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        tooltips: {
+                            mode: mode,
+                            intersect: intersect
+                        },
+                        hover: {
+                            mode: mode,
+                            intersect: intersect
+                        },
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [{
+                                // display: false,
+                                gridLines: {
+                                    display: true,
+                                    lineWidth: '4px',
+                                    color: 'rgba(0, 0, 0, .2)',
+                                    zeroLineColor: 'transparent'
+                                },
+                                ticks: $.extend({
+                                    beginAtZero: true,
+
+                                    // Include a dollar sign in the ticks
+                                    callback: function (value, index, values) {
+                                        if (value >= 1000) {
+                                            value /= 1000
+                                            value += 'k'
+                                        }
+                                        return '$' + value
+                                    }
+                                }, ticksStyle)
+                            }],
+                            xAxes: [{
+                                display: true,
+                                gridLines: {
+                                    display: false
+                                },
+                                ticks: ticksStyle
+                            }]
+                        }
+                    }
+            })
+        })
+
+    </script>
+
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Genel İstatistikler</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Çizgi Grafikleri</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Main row -->
+            <div class="row">
+                <!-- Left col -->
+                <section class="col-lg-6 connectedSortable">
+                    <!-- Custom tabs (Charts with tabs)-->
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <div class="d-flex justify-content-between">
+                                <h3 class="card-title">Swapp Ziyaret Sayısı</h3>
+                                <a href="javascript:void(0);">Rapora Git</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <p class="d-flex flex-column">
+                                    <span class="text-bold text-lg">@Model.TotalVisitor</span>
+                                    <span>Toplam Ziyaret Sayısı</span>
+                                </p>
+                                <p class="ml-auto d-flex flex-column text-right">
+                                    @if (Model.TVPercentByPreviousWeek < 0)
+                                    {
+                                        <span class="text-danger">
+                                            <i class="fas fa-arrow-down"></i> % @Model.TVPercentByPreviousWeek
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success">
+                                            <i class="fas fa-arrow-up"></i> % @Model.TVPercentByPreviousWeek
+                                        </span>
+                                    }
+                                    <span class="text-muted">Geçen Haftaya Göre</span>
+                                </p>
+                            </div>
+                            <!-- /.d-flex -->
+
+                            <div class="position-relative mb-4">
+                                <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                <canvas id="swapp-visitors-chart" height="300"></canvas>
+                            </div>
+
+                            <div class="d-flex flex-row justify-content-end">
+                                <span class="mr-2">
+                                    <i class="fas fa-square text-primary"></i> Bu Hafta
+                                </span>
+
+                                <span>
+                                    <i class="fas fa-square text-gray"></i> Geçen Hafta
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </section>
+                <!-- /.Left col -->
+                <section class="col-lg-6 connectedSortable">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <div class="d-flex justify-content-between">
+                                <h3 class="card-title">Satışlar</h3>
+                                <a href="javascript:void(0);">Rapora Git</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <p class="d-flex flex-column">
+                                    <span class="text-bold text-lg">₺ @Model.STotalProductSales</span>
+                                    <span>Toplam Satış Miktarı</span>
+                                </p>
+                                <p class="ml-auto d-flex flex-column text-right">
+                                    @if (Model.SProfitStatusByLastMonth < 0)
+                                    {
+                                        <span class="text-danger">
+                                            <i class="fas fa-arrow-down"></i> % @Model.SProfitStatusByLastMonth
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success">
+                                            <i class="fas fa-arrow-up"></i> % @Model.SProfitStatusByLastMonth
+                                        </span>
+                                    }
+                                    <span class="text-muted">Geçen aydan beri kar/zarar</span>
+                                </p>
+                            </div>
+                            <!-- /.d-flex -->
+
+                            <div class="position-relative mb-4">
+                                <canvas id="swapp-sales-chart" height="300"></canvas>
+                            </div>
+
+                            <div class="d-flex flex-row justify-content-end">
+                                <span class="mr-2">
+                                    <i class="fas fa-square text-primary"></i> Satış
+                                </span>
+
+                                <span>
+                                    <i class="fas fa-square text-gray"></i> Alış
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="col-lg-6 connectedSortable">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <div class="d-flex justify-content-between">
+                                <h3 class="card-title">Sayfalara Göre Ziyaretler</h3>
+                                <a href="javascript:void(0);">Rapora Git</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <p class="d-flex flex-column">
+                                    <span class="text-bold text-lg"><b>@Model.TodayVisitor</b></span>
+                                    <span>Bugün Ziyaret Eden</span>
+                                </p>
+                                <p class="ml-auto d-flex flex-column text-right">
+                                    <span class="text-muted"></span>
+                                </p>
+                            </div>
+                            <!-- /.d-flex -->
+
+                            <div class="position-relative mb-4">
+                                <canvas id="swapp-visitor-chart-by-page" height="300"></canvas>
+                            </div>
+
+                            <div class="d-flex flex-row justify-content-end">
+                                <span class="mr-2">
+                                    <i class="fas fa-square text-primary"></i> Anasayfa ziyareti
+                                </span>
+
+                                <span>
+                                    <i class="fas fa-square text-gray"></i> Panel Ziyareti
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- /.row (main row) -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

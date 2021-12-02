@@ -1,0 +1,296 @@
+﻿@inject IUnitOfWork _uow
+@model TimelineViewModel
+
+@{
+    ViewData["Title"] = "Zaman Çizgisi";
+
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Proje Süreci</li>
+                        <li class="breadcrumb-item active">Zaman Çizgisi</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Zaman Çizgisi</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body timeline_body p-3">
+                    <div class="timeline">
+                        <!-- timeline time label -->
+                        @foreach (var item in Model.Timelines)
+                        {
+                            <div class="time-label">
+                                <span style="background:@item.ColorCode">@item.Date.ToString("d")</span>
+                            </div>
+                            <!-- /.timeline-label -->
+                            <!-- timeline item -->
+                            <div>
+                                <i class="fas @item.IconClass" style="background:@item.ColorCode"></i>
+                                <div class="timeline-item">
+                                    <span class="time">
+                                        <a class="px-2 py-1 rounded mr-1 timeline_update__btn btn-primary" data-toggle="modal" data-target="#modal-xl" data-id="@item.Id" href="javascript:;"><i class="fa fa-pencil-alt"></i></a>
+                                        <a class="px-2 py-1 rounded mr-1 timeline_delete__btn btn-danger" data-id="@item.Id" href="javascript:;"><i class="fa fa-trash"></i></a>
+                                        <i class="fas fa-clock"></i>@item.Date.ToShortTimeString()
+                                    </span>
+
+                                    <h3 class="timeline-header">
+                                        @item.Title
+                                    </h3>
+                                    <img class="timeline_image img-circle" width="40" height="40" src="/admin/img/@item.MemberRole/@item.Avatar" />
+                                    <div class="timeline-body">
+                                        @Html.Raw(item.Description)
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END timeline item -->
+                        }
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            @if (_uow.Admin.GetRoleByAdmin == "admin")
+            {
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-xl">
+                    Ekle
+                </button>
+                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#modal-xl_2">
+                    Renk Ve Sınıf Seçeneği Ekle
+                </button>
+            }
+
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+
+<!-- /.content-wrapper -->
+<div class="modal fade" id="modal-xl_2">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form method="post" asp-action="tlextra">
+                <div class="modal-header">
+                    <h4 class="modal-title">Zaman Çizgisi Seçenekler</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" asp-for="Timeline.Id" />
+                    <div class="form-group">
+                        <label>Renk Seçin</label>
+                        <input class="form-control" name="ColorCode" type="color" required />
+                    </div>
+                    <div class="form-group">
+                        <label>İkon Sınıfı Seçin (font-awesome)</label>
+                        <input class="form-control" name="IconClass" type="text" placeholder="fa-clock" required />
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+                    <input type="submit" value="Gönder" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="modal-xl">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form method="post" asp-action="manage">
+                <div class="modal-header">
+                    <h4 class="modal-title">Zaman Çizgisi İşlemleri</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" asp-for="Timeline.Id" />
+                    <input type="hidden" id="Date" />
+                    <div class="form-group">
+                        <label>Başlık</label>
+                        <input class="form-control" asp-for="Timeline.Title" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Açıklama</label>
+                        <textarea rows="5" class="textarea" asp-for="Timeline.Description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Herkese Açık</label>
+                        <input type="checkbox" class="form-check form-control is_all__checkbox" name="TimeLine_IsAll" id="TimeLine_IsAll" />
+                    </div>
+                    <div class="form-group">
+                        <label>İkon Renk Kodu ve İkon Sınıfı Seçin</label>
+                        <select class="form-control" asp-for="Timeline.TlekstraId" required>
+                            <option value="">Lütfen kod ve ikon sınıfı seçiniz.</option>
+                            @foreach (var item in _uow.TimeLine.GetAllTLE())
+                            {
+                                <option style="background:@item.ColorCode" value="@item.Id">@item.IconClass @item.ColorCode</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+                    <input type="submit" value="Gönder" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@section script{
+    <script>
+        $("body").delegate(".is_all__checkbox","click", function () {
+            if ($(this).val() == 0) {
+                $(this).attr("value", 1);
+                $(this).prop('checked', 1);
+            }
+            else {
+                $(this).attr("value", 0);
+                $(this).prop('checked', 0);
+            }
+        });
+
+        $(".textarea").summernote();
+        $("body").delegate(".timeline_delete__btn","click", function () {
+            var id = $(this).data("id");
+            var formData = new FormData();
+            formData.append("id", id);
+
+            swal("Sileceksiniz. Emin misiniz?", {
+                buttons: {
+                    cancel: "Geri Dön",
+                    delete: {
+                        text: "Sil",
+                        value: "delete",
+                        closeModal: false,
+                    },
+                },
+            })
+                .then((value) => {
+                    switch (value) {
+                        case "delete":
+                            $.ajax({
+                                url: "/admin/timeline/delete",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    swal("Heey", "Zaman çizgisi silindi.", "success");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                },
+                                error: function () {
+                                    swal("Owww!", "Zaman çizgisi silinemedi. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            });
+                            break;
+                        default:
+                            swal("Görüşürüz!");
+                            setTimeout(
+                                function () {
+                                    location.reload();
+                                }, 1000);
+                    }
+                });
+        });
+        $("body").delegate(".timeline_update__btn","click", function () {
+            var id = $(this).data("id");
+            var formData = new FormData();
+            formData.append("id", id);
+            $.ajax({
+                url: "/admin/timeline/get",
+                method: 'POST',
+                data: formData,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data.timeline);
+                    $("#modal-xl #Timeline_Id").val(data.timeline.id);
+                    $("#modal-xl #Timeline_Title").val(data.timeline.title);
+                    $("#modal-xl #Timeline_Date").val(data.timeline.date);
+                    $("#modal-xl #TimeLine_IsAll").val(data.timeline.isAll);
+                    $("#modal-xl #Timeline_Description").summernote("code", data.timeline.description);
+                    $("#modal-xl  #Timeline_TlekstraId").val(data.timeline.tlekstraId);
+                },
+            });
+        });
+
+        var pageNumber = 1;
+        var pagePost = true;
+        $(".timeline_body").on('scroll', function () {
+            if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+                if (pagePost) {
+                    $.ajax({
+                        url: "/admin/timeline/index",
+                        data: { pageNumber: pageNumber },
+                    }).done(function (data) {
+                        if (data.timelines.length == 0) {
+                            pagePost = false;
+                        } else {
+                            setTimeout(function () {
+                                $.each(data.timelines, function (index, value) {
+                                    $('.timeline_body .timeline').append("<div class='time-label'> <span style='background: " + value.colorCode + "'> " + value.date+ "</span> </div> <!-- /.timeline-label --> <!-- timeline item --> <div> <i class='fas " + value.iconClass + "' style='background:" + value.colorCode + "'></i> <div class='timeline-item'> <span class='time'> <a class='px-2 py-1 rounded mr-1 timeline_update__btn btn-primary' data-toggle='modal' data-target='#modal-xl' data-id='" + value.id + "' href='javascript:;'><i class='fa fa-pencil-alt'></i></a> <a class='px-2 py-1 rounded mr-1 timeline_delete__btn btn-danger' data-id='" + value.id + "' href='javascript:;'><i class='fa fa-trash'></i></a> <i class='fas fa-clock'></i>" + value.date + " </span> <h3 class='timeline-header'> " + value.title + " </h3> <img class='timeline_image img-circle' width='40' height='40' src='/admin/img/" + value.memberRole + "/" + value.avatar + "' /> <div class='timeline-body'>" + value.description + "</div> </div> </div>");
+                                });
+                            }, 220);
+                            pageNumber++;
+                        }
+
+                    });
+                }
+            }
+        });
+    </script>
+}
+
+@section style{
+    <style>
+        .timeline_body
+        {
+            height: 700px;
+            overflow-y: scroll;
+        }
+    </style>
+}

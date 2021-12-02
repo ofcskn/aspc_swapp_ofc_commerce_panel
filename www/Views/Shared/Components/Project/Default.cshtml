@@ -1,0 +1,41 @@
+﻿@model IQueryable<Project>
+<section class="project section-padding" id="project">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-lg-12 col-12">
+
+                <h2 class="mb-5 text-center" data-aos="fade-up">
+                    <strong>SWAPP-ÖFC</strong> Panelinde Size Nasıl
+                    İmkanlar Sunuyoruz?
+                </h2>
+
+                <div class="owl-carousel owl-theme" id="project-slide">
+                    @foreach (var item in Model)
+                    {
+                        <div class="item project-wrapper" data-aos="fade-up" data-aos-delay="100">
+                            <img data-src="/img/project/@item.Image" class="img-fluid owl-lazy" alt="project image">
+
+                            <div class="project-info">
+                                <small>@item.SubTitle</small>
+
+                                <h3>
+                                    <a href="@item.Link">
+                                        <span>@item.Title</span>
+                                        <i class="fa fa-angle-right project-icon"></i>
+                                    </a>
+                                </h3>
+                                @if (item.Description != null)
+                                {
+                                    @Html.Raw(item.Description)
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -1,0 +1,491 @@
+﻿@model WidgetViewModel
+
+@{
+    ViewData["Title"] = "Swappo Kutuları";
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">İstatistikler</li>
+                        <li class="breadcrumb-item active">Swappo Kartları</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-dark">
+                <div class="card-header">
+                    <h3 class="card-title">Swappo <b>Toplam</b> Kartları</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-dark px-2 py-4 ">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Cari Sayısı</span>
+                                    <span class="info-box-number">
+                                        @Model.TotalCurrent
+                                    </span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-shopping-cart"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Ürün Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalProduct</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <!-- fix for small devices only -->
+                        <div class="clearfix hidden-md-up"></div>
+
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user-tie"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Personel Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalStaff</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-boxes"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Kategori Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalCategory</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-comment-dots"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Ürün Yorumları Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalComment</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-blue elevation-1"><i class="fas fa-box-open"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Ürün Toplam Stok Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalStock</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-dark elevation-1"><i class="fas fa-newspaper"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Abone Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalSubscriber</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-purple elevation-1"><i class="fas fa-comment"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Mesaj Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalMessage</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-blue elevation-1"><i class="fas fa-chalkboard"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Departman Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalDepartment</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-green elevation-1"><i class="fas fa-file-invoice"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Fatura Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalInvoice</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-cyan elevation-1"><i class="fas fa-envelope"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Gönderilen Mail Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalSendedMail</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-indigo elevation-1"><i class="fas fa-door-open"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Panel Ziyaret Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalPanelVisitor</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-cyan elevation-1"><i class="fas fa-door-open"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Anasayfa Ziyaret Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalVisitor</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!--col-->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-fuchsia elevation-1"><i class="fa fa-money-bill"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Satış Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalSale</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-danger elevation-1"><i class="fas fa-user-check"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Aktif Üye Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalActiveCurrent</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-gray-dark elevation-1"><i class="fas fa-truck"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text"><b>Şu An</b> Kargodaki Ürün Sayısı</span>
+                                    <span class="info-box-number">@Model.ProductInCargo</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-indigo elevation-1"><i class="fas fa-truck"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Kargolanan Ürün Sayısı</span>
+                                    <span class="info-box-number">@Model.ProductNotInCargo</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-gradient-fuchsia elevation-1"><i class="fa fa-code-branch"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Ürün Marka Sayısı</span>
+                                    <span class="info-box-number">@Model.TotalProductBrand</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <!-- Default box -->
+            <div class="card card-dark">
+                <div class="card-header">
+                    <h3 class="card-title">Swappo <b>En Çok</b> Kutuları</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3 bg-gradient-cyan">
+                                <span class="info-box-icon"><i class="fas fa-tag"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Satış Yapan Personel</span>
+                                    <span class="info-box-number">@Model.StaffNameByMostSale</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3 bg-secondary">
+                                <span class="info-box-icon"><i class="fas fa-comment-dollar"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Yorum Yapılan Ürün</span>
+                                    <span class="info-box-number">@Model.ProductByMostComment</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <!-- fix for small devices only -->
+                        <div class="clearfix hidden-md-up"></div>
+
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3 bg-gradient-danger">
+                                <span class="info-box-icon"><i class="fas fa-user-shield"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Ürün Satın Alan Müşteri</span>
+                                    <span class="info-box-number">@Model.CurrentByMostBuying</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3 bg-gradient-green">
+                                <span class="info-box-icon"><i class="fas fa-donate"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Fiyata Göre Ürün</span>
+                                    <span class="info-box-number">@Model.ProductByMaxPrice</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3 bg-gradient-indigo">
+                                <span class="info-box-icon"><i class="fas fa-donate"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Satan Ürün</span>
+                                    <span class="info-box-number">@Model.ProductByMostSale</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3 bg-gradient-yellow">
+                                <span class="info-box-icon"><i class="fas fa-donate"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Satan Marka</span>
+                                    <span class="info-box-number">@Model.ProductBrandByMostSale</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3 bg-gradient-teal">
+                                <span class="info-box-icon"><i class="fas fa-donate"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Satan Ürün Kategorisi</span>
+                                    <span class="info-box-number">@Model.CategoryByMostSale</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3 bg-gradient-lightblue">
+                                <span class="info-box-icon"><i class="fas fa-donate"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text"><b>En Az Satan Ürün</b></span>
+                                    <span class="info-box-number">@Model.ProductByLessSale</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <!-- Default box -->
+            <div class="card card-gray-dark">
+                <div class="card-header">
+                    <h3 class="card-title">Swappo <b>Kategori Stok</b> Kutuları</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>@Model.TotalVisitor</h3>
+                                    <p>Toplam Ziyaret Sayısı</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">Detay <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>@Model.TodayHomeVisitor</h3>
+                                    <p><b>Bugün </b> Anasayfa Ziyaret Sayısı</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">Detay <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-warning">
+                                <div class="inner">
+                                    <h3>@Model.TodayAdminVisitor</h3>
+
+                                    <p><b>Bugün</b> Panel Ziyaret Sayısı</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">Detay <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>@Model.TodayCurrentRegistered</h3>
+                                    <p><b>Bugün</b> Yeni Üye Sayısı</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">Detay <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

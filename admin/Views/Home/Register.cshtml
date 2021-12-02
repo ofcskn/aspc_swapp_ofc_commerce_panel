@@ -1,0 +1,97 @@
+﻿@model Admin
+
+@{
+    ViewData["Title"] = "Swapp-OFC Kullanıcı Kaydı Oluştur";
+    Layout = "_LayoutHome";
+}
+
+
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Kullanıcı Kaydı</p>
+        <hr />
+        <p>Sisteme giriş yapabilmek ve gerekli bilgileri edinebilmek için lütfen <b>geçerli bir e-posta adresi</b> giriniz.</p>
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">
+                @Html.Raw(ViewBag.ErrorMessage)
+            </div>
+        }
+        else if (ViewBag.SuccessMessage != null)
+        {
+            <div class="alert alert-success">
+                @Html.Raw(ViewBag.SuccessMessage)
+            </div>
+        }
+        <form asp-controller="home" asp-action="register" method="post" class="login-form change-form">
+            <div asp-validation-summary="All"></div>
+            <div class="input-group mb-3">
+                <input asp-for="Name" type="text" class="form-control" placeholder="İsminiz">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-font"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input asp-for="Surname" type="text" class="form-control" placeholder="Soyadınız">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-bold"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input asp-for="UserName" type="text" class="form-control" placeholder="Kullanıcı Adınız">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-user"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input asp-for="Email" type="text" class="form-control" placeholder="E-Posta Adresiniz">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input asp-for="PinCode" type="number" class="form-control" placeholder="6 Haneli Pin Kodu Belirleyin">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-sort-numeric-up"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input asp-for="Password" type="password" class="form-control" placeholder="Şifreniz">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-key"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input name="passwordAgain" class="form-control" type="password" placeholder="Şifrenizi Tekrar Giriniz">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-key"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- /.col -->
+                <div class="col-12 mb-2">
+                    <button type="button" class="btn btn-primary btn-block btn_submit">Üye Ol</button>
+                </div>
+                <!-- /.col -->
+                <div class="col-12">
+                    <a asp-controller="home" asp-action="login" class="btn btn-success btn-block"><i class="fa fa-angle-double-left"></i></a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- /.login-card-body -->
+</div>

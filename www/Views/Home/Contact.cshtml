@@ -1,0 +1,59 @@
+﻿@model Contact
+@{
+    ViewData["Title"] = "İletişim";
+}
+
+    <section class="contact section-padding">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-6 mx-auto col-md-7 col-12 py-5 mt-5 text-center" data-aos="fade-up">
+
+                    <h1 class="mb-4"><strong>Görüşlerini</strong> Paylaş</h1>
+                    <p>Merhaba. Ben <strong>Ömer Faruk Coşkun.</strong> Proje ile ilgili görüşlerini, sistemde görmüş olduğun açıkları aşağıdaki formdan bana iletebilirsin. Ya da aşağıdaki e-posta adresimden bana mesaj gönderebilirsin. İlgin ve anlayışın için teşekkür ederim. </p>
+                    <br />
+                    <a href="mailto:info@ofcskn.com">info@ofcskn.com</a>
+                </div>
+
+                <div class="col-lg-8 mx-auto col-md-10 col-12">
+
+                    <!-- Follow https://templatemo.com/contact page to setup your own contact form -->
+                    @if (ViewBag.SuccessMessage != null)
+                    {
+                        <div class="alert alert-success" data-aos="fade-up" data-aos-delay="300">
+                            @ViewBag.SuccessMessage
+                        </div>
+                    }
+                    <form asp-controller="home" asp-action="contact" method="post" class="contact-form" data-aos="fade-up" data-aos-delay="300" role="form">
+                        <div class="row">
+                            <div class="col-lg-6 col-12">
+                                <input type="text" class="form-control" asp-for="Name" placeholder="İsminiz">
+                                <span asp-validation-for="Name"></span>
+                            </div>
+
+                            <div class="col-lg-6 col-12">
+                                <input type="text" class="form-control" asp-for="Subject" placeholder="Konu">
+                                <span asp-validation-for="Subject"></span>
+                            </div>
+
+                            <div class="col-lg-6 col-12">
+                                <input type="email" class="form-control" asp-for="Email" placeholder="Eposta Adresiniz">
+                                <span asp-validation-for="Email"></span>
+                            </div>
+
+                            <div class="col-lg-12 col-12">
+                                <textarea class="form-control" rows="6" asp-for="Message" placeholder="Mesajınız"></textarea>
+                                <span asp-validation-for="Message"></span>
+                            </div>
+
+                            <div class="col-lg-5 mx-auto col-7">
+                                <button type="submit" class="form-control" id="submit-button" name="submit">Gönder</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                @await Component.InvokeAsync("Newsletter")
+            </div>
+        </div>
+    </section>

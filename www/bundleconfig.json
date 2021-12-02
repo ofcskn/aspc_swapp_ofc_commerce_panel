@@ -1,0 +1,37 @@
+[
+  {
+    "outputFileName": "wwwroot/css/style.min.css",
+    "inputFiles": [
+      "wwwroot/assets/css/bootstrap.min.css",
+      "wwwroot/assets/css/font-awesome.min.css",
+      "wwwroot/assets/css/aos.css",
+      "wwwroot/assets/css/owl.carousel.min.css",
+      "wwwroot/assets/css/owl.theme.default.min.css",
+      "wwwroot/assets/css/templatemo-digital-trend.css",
+      "wwwroot/css/site.css",
+      "wwwroot/css/responsive.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/script.min.js",
+    "inputFiles": [
+      "wwwroot/assets/js/jquery.min.js",
+      "wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
+      "wwwroot/lib/jquery.lazy-master/jquery.lazy.min.js",
+      "wwwroot/lib/jquery.lazy-master/jquery.lazy.plugins.min.js",
+      "wwwroot/assets/js/bootstrap.min.js",
+      "wwwroot/assets/js/aos.js",
+      "wwwroot/lib/jquery.lazy-master/jquery.lazy.min.js",
+      "wwwroot/lib/jquery.lazy-master/jquery.lazy.plugins.min.js",
+      "wwwroot/assets/js/owl.carousel.min.js",
+      "wwwroot/assets/js/smoothscroll.js",
+      "wwwroot/assets/js/custom.js",
+      "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

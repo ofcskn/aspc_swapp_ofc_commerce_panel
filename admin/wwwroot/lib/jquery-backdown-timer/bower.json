@@ -1,0 +1,13 @@
+{
+	"name": "timer.jquery",
+	"ignore": [
+		".gitignore",
+		".travis.yml",
+		"Gruntfile.js",
+		"package.json",
+		"test"
+	],
+	"dependencies": {
+		"jquery": ">=1.9.0"
+	}
+}

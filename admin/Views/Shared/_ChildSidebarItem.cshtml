@@ -1,0 +1,44 @@
+﻿@model MenuViewModel
+
+@{
+    var childItems = Model.Menus.Where(p => p.ParentId == Model.Menu.Id);
+}
+@if (childItems.Any())
+{
+    <ul class="nav nav-treeview">
+        @foreach (var child in childItems.OrderBy(p => p.Priority))
+        {
+            var childChildItems = Model.Menus.Where(p => p.ParentId == child.Id);
+            if (child.RouteString != null)
+            {
+                var permalink = child.ControllerName + "/" + child.ActionName + "?" + child.RouteString + "=" + child.RouteValue;
+                <li class="nav-item">
+                    <a href="/admin/@permalink" class="nav-link">
+                        <i class="@child.FontAwesomeClass nav-icon"></i>
+                        <p>@child.Title</p>
+                        @if (childChildItems.Any())
+                        {
+                            <i class="right fas fa-angle-left"></i>
+                        }
+                    </a>
+                    <partial name="_ChildSidebarItem" model="new MenuViewModel { Menus = Model.Menus, Menu = child}" />
+                </li>
+            }
+            else
+            {
+                var permalink = child.ControllerName + "/" + child.ActionName;
+                <li class="nav-item">
+                    <a href="/admin/@permalink" class="nav-link">
+                        <i class="@child.FontAwesomeClass nav-icon"></i>
+                        <p>@child.Title</p>
+                        @if (childChildItems.Any())
+                        {
+                            <i class="right fas fa-angle-left"></i>
+                        }
+                    </a>
+                    <partial name="_ChildSidebarItem" model="new MenuViewModel { Menus = Model.Menus, Menu = child}" />
+                </li>
+            }
+        }
+    </ul>
+}

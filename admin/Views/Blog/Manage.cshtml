@@ -1,0 +1,164 @@
+﻿@model Blog
+
+@{
+    ViewData["Title"] = "Blog Düzenle";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Bloglar</li>
+                        <li class="breadcrumb-item active">Düzenle</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Blogları Düzenle</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="manage" method="post" enctype="multipart/form-data">
+                        @if (ViewBag.AlertMessage != null)
+                        {
+                            <div class="alert alert-danger d-block">
+                                @ViewBag.AlertMessage
+                            </div>
+                        }
+                        <div class="alert"></div>
+                        <input class="form-control" asp-for="Id" type="hidden" />
+                        <input class="form-control" asp-for="Image" type="hidden" />
+                        <input class="form-control" asp-for="Permalink" type="hidden" />
+                        <input class="form-control" asp-for="Enabled" type="hidden" />
+                        <input class="form-control" asp-for="Date" type="hidden" />
+                        <div class="form-group">
+                            <label asp-for="Title">Başlık</label>
+                            <input class="form-control" asp-for="Title" required />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SubTitle">Alt Başlık</label>
+                            <input class="form-control" asp-for="SubTitle" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea class="textarea" asp-for="Description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Fotoğraf</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupFileAddon01">Yükle</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="Image" />
+                                    <label class="custom-file-label" name="Image">Dosya Seçin</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group border-dark mt-2 shadow-sm">
+                            @if (Model != null)
+                            {
+                                <img src="/img/blog/@Model.Image" alt="" height="400" />
+                            }
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <button type="button" class="btn btn-dark save_draft">Taslak</button>
+                            <input type="button" value="Gönder" class="btn btn-success btn_submit" />
+                            <a asp-action="list" class="btn btn-info">Listeye Dön</a>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section script{
+    <script>
+        var saveEmail = function () {
+            const id = $("#Id").val();
+            const formData = new FormData();
+            formData.append("Id", id);
+            formData.append("Title", $("#Title").val());
+            formData.append("SubTitle", $("#SubTitle").val());
+            formData.append("Description", $("#Description").summernote("code"));
+
+            if (id != 0) {
+                $.ajax({
+                    url: "/admin/blog/draftsave",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    data: formData
+                }).done(function (data) {
+                    $('form button').removeClass("non-click-link");
+                    $("#Id").val(data.id);
+                    $("form .alert ").addClass("d-block alert-success");
+                    $("form .alert ").text("Taslak olarak kaydedildi.");
+                    $("form .alert ").fadeIn("200");
+                    setTimeout(function () { $("form .alert ").removeClass("d-block alert-success").fadeOut("200"); }, 3500);
+                    setTimeout(function () { $("form .alert ").fadeOut("200"); }, 40000);
+                });
+            }
+        };
+
+        //Control For Draft Function
+        var timer, value;
+        var draftSecond = function (str) {
+            clearTimeout(timer);
+            if (str.length > 2 && value != str) {
+                timer = setTimeout(function () {
+                    value = str;
+                    saveEmail();
+                }, 2000);
+            }
+        };
+
+        $("form").find("input, textarea").on("keyup", function () {
+            $('form button').addClass("non-click-link");
+            draftSecond($(this).val());
+        });
+
+        $(".save_draft").on("click", function () {
+            $('form button').addClass("non-click-link");
+            saveEmail();
+        });
+
+        $('#Description').summernote({
+            callbacks: {
+                onKeyup: function (e) {
+                    $('form button').addClass("non-click-link");
+                    draftSecond($(this).summernote("code"));
+                }
+            }
+        });
+    </script>
+}

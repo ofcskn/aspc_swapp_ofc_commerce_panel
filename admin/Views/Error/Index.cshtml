@@ -1,0 +1,125 @@
+﻿@{
+    ViewData["Title"] = ViewBag.ErrorCode + " Hata Sayfası";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.ErrorCode Hata Sayfası</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">@ViewBag.ErrorCode Hata Sayfası</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    @if (ViewBag.ErrorCode == "500")
+    {
+        <section class="content">
+            <div class="error-page">
+                <h2 class="headline text-danger">@ViewBag.ErrorCode</h2>
+
+                <div class="error-content">
+                    <h3><i class="fas fa-exclamation-triangle text-danger"></i> @ViewBag.ErrorMessage</h3>
+                    @if (ViewBag.ErrorSearchMessage != null)
+                    {
+                        @Html.Raw(ViewBag.ErrorSearchMessage)
+                        <form href="#" class="search-form">
+                            <div class="">
+                                <div class="form-group mb-2">
+                                    <input type="text" name="name" class="form-control" placeholder="İsminiz">
+                                </div>
+                                <div class="form-group mb-2">
+                                    <input type="text" name="message" class="form-control" placeholder="Sorunu Bildir!">
+                                </div>
+                                <div class="input-group-append d-flex justify-content-between">
+                                    <button type="submit" name="submit" class="btn btn-danger">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                    <a class='btn btn-danger' href='/admin'>Anasayfa</a>
+                                </div>
+                            </div>
+                            <!-- /.input-group -->
+                        </form>
+                    }
+                </div>
+            </div>
+            <!-- /.error-page -->
+
+        </section>
+    }
+    else if (ViewBag.ErrorCode == "403")
+    {
+        <!-- Main content -->
+        <section class="content">
+            <div class="error-page">
+                <h2 class="headline text-info">@ViewBag.ErrorCode</h2>
+
+                <div class="error-content">
+                    <h3><i class="fas fa-exclamation-triangle text-info"></i> @ViewBag.ErrorMessage</h3>
+                    @if (ViewBag.ErrorSearchMessage != null)
+                    {
+                        @Html.Raw(ViewBag.ErrorSearchMessage)
+                        <form asp-controller="search" asp-action="result" method="get" class="search-form">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control" placeholder="Arama Yap">
+                                <div class="input-group-append">
+                                    <button type="submit" name="submit" class="btn btn-info">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /.input-group -->
+                        </form>
+                        <a class='mt-2 btn btn-warning float-right' href='/admin'>Anasayfa</a>
+                    }
+                </div>
+                <!-- /.error-content -->
+            </div>
+            <!-- /.error-page -->
+        </section>
+        <!-- /.content -->
+    }
+    else
+    {
+        <!-- Main content -->
+        <section class="content">
+            <div class="error-page">
+                <h2 class="headline text-warning">@ViewBag.ErrorCode</h2>
+
+                <div class="error-content">
+                    <h3><i class="fas fa-exclamation-triangle text-warning"></i> @ViewBag.ErrorMessage</h3>
+                    @if (ViewBag.ErrorSearchMessage != null)
+                    {
+                        @Html.Raw(ViewBag.ErrorSearchMessage)
+                        <form asp-controller="search" asp-action="result" method="get" class="search-form">
+                            <div class="input-group">
+                                <input type="text" name="q" class="form-control" placeholder="Arama Yap">
+
+                                <div class="input-group-append">
+                                    <button type="submit" name="submit" class="btn btn-warning">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /.input-group -->
+                        </form>
+                        <a class='mt-2 btn btn-warning float-right' href='/admin'>Anasayfa</a>
+                    }
+                </div>
+                <!-- /.error-content -->
+            </div>
+            <!-- /.error-page -->
+        </section>
+        <!-- /.content -->
+    }
+</div>
+<!-- /.content-wrapper -->

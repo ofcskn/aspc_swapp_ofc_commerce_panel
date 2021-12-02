@@ -1,0 +1,55 @@
+﻿@model Blog
+@{
+    ViewData["Title"] = Model.Title;
+
+    var b = Model;
+    string webpImage = null;
+    try
+    {
+        webpImage = b.Image.Replace("jpg", "webp");
+    }
+    catch (Exception)
+    {
+    }
+}
+<!-- BLOG DETAIL -->
+<section class="project-detail section-padding-half">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-9 mx-auto col-md-10 col-12 mt-lg-5 text-center" data-aos="fade-up">
+                <h4 class="blog-category text-info">@b.SubTitle</h4>
+
+                <h1>@b.Title</h1>
+
+                <div class="client-info">
+                    <div class="d-flex justify-content-center align-items-center mt-3">
+                        <img src="/img/media/omer-faruk-coskun.webp" srcset="/img/media/omer-faruk-coskun.jpg" class="rounded-circle img-fluid" alt="male avatar">
+
+                        <p>Ömer Faruk Coşkun</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<div class="full-image text-center" data-aos="zoom-in">
+    <img src="/img/blog/@b.Image" srcset="/img/blog/@webpImage" class="img-fluid" alt="blog header">
+</div>
+
+
+<!-- BLOG DETAIL -->
+<section class="project-detail">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-9 mx-auto col-md-11 col-12 my-5 pt-3" data-aos="fade-up">
+                @Html.Raw(b.Description)
+            </div>
+        </div>
+    </div>
+
+</section>

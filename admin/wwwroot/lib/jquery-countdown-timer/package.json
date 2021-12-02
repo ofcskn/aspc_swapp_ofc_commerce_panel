@@ -1,0 +1,54 @@
+{
+   "name": "countdowntimer",
+   "description": "Reverse count down jQuery plugin for displaying countdown as per need. Also displays current time.",
+   "keywords": [
+      "jquery",
+      "countdown",
+      "timer",
+      "countdownTimer",
+      "reverse",
+      "clock",
+      "time",
+      "hours",
+      "minutes",
+      "seconds",
+      "date",
+      "days",
+      "years",
+      "months",
+      "localisation",
+      "jquery-plugin"
+   ],
+   "version": "2.0.1",
+   "author": {
+      "name": "Harshen Pandey",
+      "email": "harshenpandey@gmail.com",
+      "url": "https://remote.com/harshen/"
+   },
+   "bugs": "https://github.com/harshen/jQuery-countdownTimer/issues",
+   "homepage": "https://github.com/harshen/jQuery-countdownTimer",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/harshen/jQuery-countdownTimer.git"
+   },
+   "license": "(MIT OR GPL-3.0)",
+   "dependencies": {
+      "jquery": "^3.2.1"
+   },
+   "devDependencies": {
+      "grunt": "^1.0.1",
+      "grunt-contrib-clean": "~1.1.0",
+      "grunt-contrib-compress": "~1.4.3",
+      "grunt-contrib-copy": "~1.0.0",
+      "grunt-contrib-jshint": "^1.1.0",
+      "grunt-contrib-nodeunit": "~1.0.0",
+      "grunt-contrib-qunit": "~2.0.0",
+      "grunt-contrib-uglify": "^3.1.0",
+      "grunt-contrib-watch": "~1.0.0",
+      "grunt-eslint": "^20.1.0",
+      "grunt-jsdoc": "~2.2.0",
+      "grunt-jsonlint": "~1.1.0",
+      "grunt-text-replace": "~0.4.0",
+      "grunt-version": "~1.2.1"
+   }
+}

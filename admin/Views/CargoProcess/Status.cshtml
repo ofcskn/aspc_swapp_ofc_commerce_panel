@@ -1,0 +1,245 @@
+﻿@model IQueryable<CargoProcess>
+@inject IUnitOfWork _uow
+
+@{
+    var role = _uow.Admin.GetRoleByAdmin;
+    ViewData["Title"] = "Kargo Süreç Detayları";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Kargo Süreç Detayları</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Kargo Süreç Detayları</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model.Count() != 0)
+                    {
+                        int i = 0;
+                        <div id="accordion">
+                            @foreach (var item in Model)
+                            {
+                                <div class="card card-lightblue mb-1">
+                                    <div class="card-header">
+                                        <h4 class="card-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_@i" class="collapsed" aria-expanded="false">
+                                                @item.Title #@i
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse_@i" class="panel-collapse in collapse" style="">
+                                        <div class="card-body">
+                                            @Html.Raw(item.Description)
+                                            @if (role == "admin" || role == "user" || role == "staff")
+                                            {
+                                                <a class="btn btn-danger delete" data-id="@item.Id"><i class="fas fa-trash"></i></a>
+                                                <button data-toggle="modal" data-target="#modal-xl" type="button" data-id="@item.Id" class="btn btn-primary itemUpdateBtn"><i class="fa fa-pencil-alt"></i></button>
+                                            }
+                                            <div class="d-none">@(i++)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="my-3 text-center">Henüz eklenmiş veri bulunmamaktadır.</p>
+                    }
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            @if (role == "admin" || role == "user" || role == "staff")
+            {
+                <a asp-controller="productcargo" asp-action="list" class="btn btn-info">
+                    Geri Dön
+                </a>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-xl">
+                    Adım Ekle
+                </button>
+            }
+            @if (role == "current")
+            {
+                <a asp-controller="productcargo" asp-action="list" asp-route-currentid="@_uow.Admin.GetIdByAdmin" class="btn btn-info">
+                    Geri Dön
+                </a>
+            }
+        </div>
+        <!-- /.card -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<!-- /.modal -->
+@if (role == "admin" || role == "user" || role == "staff")
+{
+    <div class="modal fade" id="modal-xl">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Kargo Süreç İşlemleri</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="itemForm" method="post">
+                        <input type="hidden" name="Id" value="0" class="form-control">
+                        <input type="text" name="ProductCargoId" value="@ViewBag.ProductCargoId" class="form-control">
+                        <div class="form-group">
+                            <label for="Title">Süreç Başlığı</label>
+                            <input name="Title" placeholder="Kargonuz dağıtımdadır." class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="Description">Detay</label>
+                            <textarea name="Description" placeholder="Detay giriniz." class="textarea"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+                    <button id="itemAddBtn" type="button" class="btn btn-primary">Ekle</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+}
+
+
+@section script{
+    <script>
+        $(".textarea").summernote();
+        $("#itemAddBtn").on("click", function () {
+            const itemId = $("#itemForm input[name='Id']").val();
+            const itemTitle = $("#itemForm input[name='Title']").val();
+            const itemDesc = $("#itemForm textarea[name='Description']").val();
+            const itemProductCargoId = $("#itemForm input[name='ProductCargoId']").val();
+
+            const formData = new FormData();
+            formData.append("Title", itemTitle);
+            formData.append("Id", itemId);
+            formData.append("Description", itemDesc);
+            formData.append("ProductCargoId", itemProductCargoId);
+
+            console.log(itemDesc);
+            console.log(itemTitle);
+            console.log(itemId);
+            $.ajax({
+                url: "/admin/cargoprocess/manage",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData
+            }).done(function (data) {
+                if (data == "success") {
+                    swal("Süreç ekleme başarılı.");
+                    setTimeout(function () { window.location.reload() }, 1500);
+                }
+                else {
+                    swal("Süreç ekleme başarısız. Lütfen gerekli alanları doldurduğunuzdan emin olun.");
+                }
+            });
+
+        });
+
+        $(".itemUpdateBtn").on("click", function () {
+            var id = $(this).data("id");
+            var formData = new FormData();
+            formData.append("id", id);
+            $.ajax({
+                url: "/admin/cargoprocess/get",
+                method: 'POST',
+                data: formData,
+                dataType: "json",
+                processData: false,
+                contentType: false
+            }).done(function (data) {
+                console.log(data);
+                if (data != null) {
+                    $("#itemForm input[name='Id']").val(data.id);
+                    $("#itemForm input[name='Title']").val(data.title);
+                    $("#itemForm textarea[name='Description']").summernote("code", data.description);
+                }
+            });
+        });
+
+
+
+        $(".delete").on("click", function () {
+            const itemId = $(this).data("id");
+
+            const formData = new FormData();
+            formData.append("id", itemId);
+
+            swal({
+                title: 'Silmek istediğine emin misin?',
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: "/admin/cargoprocess/delete",
+                            type: "POST",
+                            processData: false,
+                            contentType: false,
+                            data: formData,
+                            success: function (data) {
+                                if (data == "success") {
+                                    swal("Silme İşlemi Başarılı");
+                                    setTimeout(function () { window.location.reload() }, 1500);
+                                }
+                                else {
+                                    swal("Silme işlemi başarılı olamadı. Tekrar Deneyiniz.");
+                                }
+
+                            },
+                            error: function () {
+                                swal("Silme işlemi başarılı olamadı. Tekrar Deneyiniz.");
+                            }
+                        });
+
+                        swal("Poof! Seçtiğin nesne veritabanından silindi!", {
+                            icon: "success",
+                        });
+                    } else {
+                        swal("Silme işlemi iptal edildi!");
+                    }
+                });
+        });
+    </script>
+}

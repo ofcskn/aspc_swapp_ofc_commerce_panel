@@ -1,0 +1,286 @@
+﻿@model StatisticViewModel
+@{
+    int i = 0;
+    int t = 0;
+    ViewData["Title"] = "Pasta Grafikleri";
+}
+@section style{
+    <link href="~/lib/chart.js/dist/Chart.css" rel="stylesheet" />
+    <style>
+        .myChart
+        {
+            width: 100%;
+            height: 300px;
+        }
+
+
+        .site-report
+        {
+            width: auto;
+        }
+
+
+        .weather
+        {
+            margin: 50px 0;
+        }
+
+            .weather .weatherwidget
+            {
+                margin-bottom: 20px;
+            }
+
+        .widget-list
+        {
+            margin-top: 20px;
+            margin-bottom: 60px;
+        }
+
+            .widget-list .widget-box.red
+            {
+                background: #d8002e;
+            }
+
+            .widget-list .widget-box.blue
+            {
+                background: #0083b5;
+            }
+
+            .widget-list .widget-box.green
+            {
+                background: #00d071;
+            }
+
+            .widget-list .widget-box.black
+            {
+                background: #585858;
+            }
+
+            .widget-list .widget-box.purple
+            {
+                background: #d800a5;
+            }
+
+            .widget-list .widget-box
+            {
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+                .widget-list .widget-box .widget-content
+                {
+                    padding: 40px;
+                    text-align: center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                }
+
+                .widget-list .widget-box h2
+                {
+                    font-size: 24px;
+                }
+
+                .widget-list .widget-box .widget-icon
+                {
+                    font-size: 26px;
+                    margin-bottom: 20px;
+                }
+
+                .widget-list .widget-box span
+                {
+                    font-weight: 400;
+                    font-size: 24px;
+                }
+    </style>
+}
+@section script{
+    @*<script src="~/lib/world-map-trial/mapdata.js"></script>
+        <script src="~/lib/world-map-trial/worldmap.js"></script>*@
+    <script src="~/lib/chart.js/dist/Chart.js"></script>
+    <script>
+        //For Pie Char Graphic 1 (Browser)
+        var allUsedBrowsers = @Html.Raw(Json.Serialize(Model.AllUsedBrowsers));
+        var browserUsageDatas = @Html.Raw(Json.Serialize(Model.BrowserUsageDatas));
+        var browserUsageChartColors = @Html.Raw(Json.Serialize(Model.BrowserUsageChartColors));
+
+        //For Pie Char Graphic 2 (Language)
+        var allUsedLanguages = @Html.Raw(Json.Serialize(Model.AllUsedLanguages));
+        var languageUsageDatas = @Html.Raw(Json.Serialize(Model.LanguageUsageDatas));
+        var languageUsageChartColors = @Html.Raw(Json.Serialize(Model.LanguageUsageChartColors));
+
+        //-------------
+        //- PIE CHART -
+        //-------------
+        // Get context with jQuery - using jQuery's .get() method.
+        var pieChartCanvas = $('#swapp-browser-usage-pieChart').get(0).getContext('2d')
+        var pieData = {
+            labels: allUsedBrowsers,
+            datasets: [
+                {
+                    data: browserUsageDatas,
+                    backgroundColor: browserUsageChartColors,
+                }
+            ]
+        }
+        var pieOptions = {
+            legend: {
+                display: false
+            }
+        }
+        //Create pie or douhnut chart
+        // You can switch between pie and douhnut using the method below.
+        var pieChart = new Chart(pieChartCanvas, {
+            type: 'doughnut',
+            data: pieData,
+            options: pieOptions
+        })
+
+
+        //-------------
+        //- PIE CHART -
+        //-------------
+        // Get context with jQuery - using jQuery's .get() method.
+        var pieChartCanvas = $('#swapp-language-usage-pieChart').get(0).getContext('2d')
+        var pieData = {
+            labels: allUsedLanguages,
+            datasets: [
+                {
+                    data: languageUsageDatas,
+                    backgroundColor: languageUsageChartColors,
+                }
+            ]
+        }
+        var pieOptions = {
+            legend: {
+                display: false
+            }
+        }
+        //Create pie or douhnut chart
+        // You can switch between pie and douhnut using the method below.
+        var pieChart = new Chart(pieChartCanvas, {
+            type: 'doughnut',
+            data: pieData,
+            options: pieOptions
+        })
+  //-----------------
+  //- END PIE CHART -
+  //-----------------
+    </script>
+
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Pasta Grafikler</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">İstatistikler</li>
+                        <li class="breadcrumb-item active">Pasta Grafikler</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <section class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Ziyaretçilerin Kullanmış Olduğu Tarayıcılar</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="chart-responsive">
+                                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <canvas id="swapp-browser-usage-pieChart" height="98" width="197" class="chartjs-render-monitor" style="display: block; width: 197px; height: 98px;"></canvas>
+                                    </div>
+                                    <!-- ./chart-responsive -->
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-md-4">
+                                    <ul class="chart-legend clearfix">
+                                        @foreach (var item in Model.AllUsedBrowsers)
+                                        {
+                                            <li><i class="far fa-circle" style="color:@Model.BrowserUsageChartColors[i];"></i>@item</li>
+                                            <li class="d-none">@(i++)</li>
+                                        }
+                                    </ul>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </section>
+                <section class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Dil Tercihi</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="chart-responsive">
+                                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <canvas id="swapp-language-usage-pieChart" height="98" width="197" class="chartjs-render-monitor" style="display: block; width: 197px; height: 98px;"></canvas>
+                                    </div>
+                                    <!-- ./chart-responsive -->
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-md-4">
+                                    <ul class="chart-legend clearfix">
+                                        @foreach (var item in Model.AllUsedLanguages)
+                                        {
+                                            <li><i class="far fa-circle" style="color:@Model.LanguageUsageChartColors[t];"></i>@item</li>
+                                            <li class="d-none">@(t++)</li>
+                                        }
+                                    </ul>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

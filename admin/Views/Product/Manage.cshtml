@@ -1,0 +1,206 @@
+﻿@model Product
+@inject IUnitOfWork _uow
+
+@{
+    ViewData["Title"] = "Ürün İşlemleri";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Ürünler</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    @if (Model.Id != 0)
+                    {
+                        <h3 class="card-title">Ürün Güncelle</h3>
+                    }
+                    else
+                    {
+                        <h3 class="card-title">Ürün Ekle</h3>
+                    }
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="product" asp-action="manage" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="Status" />
+                        <input type="hidden" asp-for="Date" />
+                        <input asp-for="Barcode" class="form-control" readonly>
+                        <div class="form-group">
+                            <label asp-for="Name">Ürün Adı</label>
+                            <input asp-for="Name" class="form-control">
+                            <span class="text-danger" asp-validation-for="Name"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Brand">Markası</label>
+                            <input asp-for="Brand" class="form-control">
+                            <span class="text-danger" asp-validation-for="Brand"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Stock">Stok</label>
+                            <input asp-for="Stock" class="form-control">
+                            <span class="text-danger" asp-validation-for="Stock"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PurchasePrice">Alış Fiyatı</label>
+                            <input asp-for="PurchasePrice" class="form-control">
+                            <span class="text-danger" asp-validation-for="PurchasePrice"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SalePrice">Satış Fiyatı</label>
+                            <input asp-for="SalePrice" class="form-control">
+                            <span class="text-danger" asp-validation-for="SalePrice"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CategoryId">Kategori</label>
+                            <select asp-for="CategoryId" class="form-control custom-select">
+                                <option selected="" disabled="">Lütfen kategori seçiniz</option>
+                                @foreach (var item in _uow.Category.GetAll())
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="CategoryId"></span>
+                        </div>
+                        @*<div class="form-group mt-4">
+            <div class="btn btn-default btn-file">
+                <i class="fas fa-paperclip"></i> Fotoğraflar
+                <input type="file" name="images" multiple accept="image/*">
+            </div>
+            <p class="help-block">Max. 10MB</p>
+        </div>*@
+                        <div class="alert alert-secondary d-block">
+                            Fotoğraflar ürün eklendikten sonra <b><i class="fa fa-pencil-alt"></i> DÜZENLE </b> bölümünden eklenebilir.
+                        </div>
+                        @if (Model.Id != 0)
+                        {
+                            <hr />
+                            <div class="form-group mb-2">
+                                <div class="row">
+                                    @foreach (var item in Model.ProductImage)
+                                    {
+                                        <div class="image_box col-3" style="height:250px;">
+                                            <a data-pimage="@item.Id" href="javascript:;" class="delete_pimage btn btn-danger"><i class="fa fa-times"></i></a>
+                                            <img class="w-100 h-100 img-thumbnail" src="/admin/img/product/@item.Image" alt="" style="object-fit:cover;" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group mb-2">
+                                <div class="file-loading">
+                                    <input id="file-1" type="file" data-productid="@Model.Id" multiple class="file" name="images" data-overwrite-initial="false" data-min-file-count="1" data-max-file-count="2" data-theme="fas">
+                                </div>
+                            </div>
+                            <hr>
+                        }
+                        <input type="submit" value="Gönder" class="btn btn-success float-left mr-2">
+                        <a class="btn btn-info " asp-action="list"><i class="fas fa-reply mr-2"></i>Listeye Dön</a>
+                    </form>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@*@{
+        IEnumerable<ProductImage> productImages = null;
+        string productImagess = null;
+        if (Model.Id != 0)
+        {
+            productImages = Model.ProductImage;
+            foreach (var item in productImages)
+            {
+                productImagess = "'/admin/uploads/product" +  productImagess + item.Image + ",'";
+            }
+        }
+    }*@
+@section script{
+    <script src="~/lib/bootstrap-fileinput-master/js/fileinput.min.js"></script>
+    <script src="~/lib/bootstrap-fileinput-master/js/locales/tr.js"></script>
+    <script src="~/lib/bootstrap-fileinput-master/js/plugins/sortable.min.js"></script>
+    <script src="~/lib/bootstrap-fileinput-master/js/plugins/piexif.min.js"></script>
+    <script>
+        $(".delete_pimage").on("click", function () {
+            const pid = $(this).data("pimage");
+            var $this = $(this);
+            var formData = new FormData();
+            formData.append("id", pid);
+
+            $.ajax({
+                url: "/admin/product/deleteproductImage/get",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData
+            }).done(function (data) {
+                $this.closest(".image_box").fadeOut("250");;
+            });
+        });
+
+
+        $("#file-1").fileinput({
+            theme: 'fas',
+            language: 'tr',
+            @*initialPreview: [
+                "https://localhost:8092/admin/img/product/image_9.jpg",
+                "https://localhost:8092/admin/img/product/@Model.ProductImage.First().Image"
+            ],*@
+            //initialPreviewConfig: [
+            //    { caption: "nature-3.jpg", size: 632762, width: "120px", url: "{$url}", key: 3 }
+
+            //],
+            uploadExtraData: {
+                'productid': $("#file-1").data("productid"), // for access control / security
+            },
+            uploadUrl: '/admin/product/insertimages', // you must set a valid URL here else you will get an error
+            allowedFileExtensions: ['jpg', 'png', 'gif'],
+            overwriteInitial: false,
+            previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+            maxFileSize: 1000,
+            maxFilesNum: 10,
+            //allowedFileTypes: ['image', 'video', 'flash'],
+            slugCallback: function (filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }
+        });
+    </script>
+}
+@section style{
+    <link href="~/lib/bootstrap-fileinput-master/css/fileinput.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-fileinput-master/css/fileinput-rtl.min.css" rel="stylesheet" />
+
+}

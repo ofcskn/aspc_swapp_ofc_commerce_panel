@@ -1,0 +1,330 @@
+﻿@model SaleProcess
+
+@{
+    ViewData["Title"] = "Satışlar İşlemleri";
+}
+@section style{
+    <style>
+        .info-span i
+        {
+            font-size: 18px;
+        }
+
+        .info-span.failed
+        {
+            background-color: #e00000;
+            transition: 0.3s linear;
+        }
+
+        .info-span.correct
+        {
+            background-color: #28a745;
+            transition: 0.3s linear;
+        }
+
+        #MemberNo
+        {
+            padding-left: 40px;
+        }
+
+        .info-span
+        {
+            position: absolute;
+            top: 0;
+            border-radius: 5px;
+            right: 0px;
+            z-index: 2;
+            border: none;
+            height: 100%;
+            padding: 0 10px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .code-hashtag
+        {
+            position: absolute;
+            top: 0;
+            border-radius: 5px;
+            left: 0px;
+            z-index: 2;
+            border: none;
+            height: 100%;
+            padding: 0 10px;
+            color: white;
+            background: #d9d9d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Satışlar</li>
+                        <li class="breadcrumb-item active">İşlemler</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="row">
+            <div class="col-md-12">
+                @{
+                    var bgColor = "card-primary";
+                }
+                @if (ViewBag.Membership == true)
+                {
+                    bgColor = "card-danger";
+                }
+                <div class="card @bgColor">
+                    <div class="card-header">
+                        @if (Model.Id != 0)
+                        {
+                            @if (ViewBag.Membership == true)
+                            {
+                                <h3 class="card-title">Üye Satışı Güncelle</h3>
+                            }
+                            else
+                            {
+                                <h3 class="card-title">Satış Güncelle</h3>
+                            }
+                        }
+                        else
+                        {
+                            @if (ViewBag.Membership == true)
+                            {
+                                <h3 class="card-title">Üye Satışı Ekle</h3>
+                            }
+                            else
+                            {
+                                <h3 class="card-title">Satış Ekle</h3>
+                            }
+                        }
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form asp-controller="saleprocess" asp-action="manage" method="post">
+                            @if (ViewBag.Membership == true)
+                            {
+                                <input type="hidden" asp-for="CurrentId" class="form-control">
+                            }
+                            <input type="hidden" asp-for="Id" class="form-control">
+                            <input type="hidden" asp-for="Status" class="form-control">
+                            @if (ViewBag.Membership == true)
+                            {
+                                if (Model.Id == 0)
+                                {
+                                    <div class="form-group">
+                                        <label for="MemberNo">6 Haneli Müşteri Kodu</label>
+                                        <div class=" position-relative">
+                                            <span class="code-hashtag"><i class="fa fa-hashtag"></i></span>
+                                            <input id="MemberNo" type="number" name="MemberNo" class="form-control" required>
+                                            <span class="info-span"><i class="fa"></i></span>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                }
+                            }
+                            <partial name="_ProductDetail.cshtml" model="Model"/>
+                            @*<button data-toggle="modal" data-target="#modal-xl" type="button" class="btn btn-primary add_product"><i class="fa fa-pencil-alt mr-2"></i>Ürün Ekle</button>*@
+                            <hr />
+                            <input type="submit" value="Gönder" class="btn btn-success mr-2">
+                            <a class="btn btn-info " asp-action="list"><i class="fas fa-reply mr-2"></i>Listeye Dön</a>
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<div class="modal fade" id="modal-xl">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ürün İşlemleri</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+                <button id="categoryAddBtn" type="button" class="btn btn-primary">Ekle</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div><!-- /.content-wrapper -->
+@section script {
+    <script>
+        const $total = $("input[name='Total']");
+        const $amount = $("#Amount");
+        const $product = $("#ProductId");
+        const $price = $("#Price");
+
+        $product.prop("disabled", true);
+        $("#ProductBarcode").prop("disabled", true);
+
+
+        $product.on("change", function () {
+            if ($amount.val() != "") {
+                const formData = new FormData();
+                formData.append("productId", $(this).val());
+                formData.append("amount", $amount.val());
+                $.ajax({
+                    url: "/admin/saleprocess/gettotal",
+                    method: 'POST',
+                    data: formData,
+                    dataType: "json",
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        $("#ProductBarcode").prop("disabled", true);
+                        $total.attr("value", data.total);
+                        $price.attr("value", data.salePrice);
+                    },
+                });
+            }
+        });
+
+        $amount.on("blur", function () {
+            if (($product.val() != "") || ($("#productBarcodeCheck").val() == 1)) {
+                const formData = new FormData();
+                formData.append("barcode", $barcode.val());
+                formData.append("productId", $product.val());
+                formData.append("amount", $(this).val());
+                $.ajax({
+                    url: "/admin/saleprocess/gettotal",
+                    method: 'POST',
+                    data: formData,
+                    dataType: "json",
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        $product.prop("disabled", false);
+                        $("#ProductBarcode").prop("disabled", false);
+
+                        $total.attr("value", data.total);
+                        $price.attr("value", data.salePrice);
+                    },
+                });
+            }
+        });
+
+        const $barcode = $("#ProductBarcode");
+        const $memberNo = $("#MemberNo");
+
+        $memberNo.on("keyup", function () {
+            const formData = new FormData();
+            formData.append("code", $(this).val());
+            $.ajax({
+                url: "/admin/current/ControlMemberCode",
+                method: 'POST',
+                data: formData,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data == "true") {
+                        setTimeout(function () {
+                            $memberNo.parent().find(".info-span i").removeClass("fa-times");
+                            $memberNo.parent().find(".info-span i").addClass("fa-check");
+                            $memberNo.parent().find(".info-span").removeClass("failed");
+                            $memberNo.parent().find(".info-span").addClass("correct");
+                        }, 300);
+                    }
+                    else {
+                        setTimeout(function () {
+                            $memberNo.parent().find(".info-span i").removeClass("fa-check");
+                            $memberNo.parent().find(".info-span i").addClass("fa-times");
+                            $memberNo.parent().find(".info-span").removeClass("correct");
+                            $memberNo.parent().find(".info-span").addClass("failed");
+                        }, 500);
+                    }
+                },
+            });
+        });
+        $barcode.on("keyup", function () {
+            var formData = new FormData();
+            formData.append("barcode", $barcode.val());
+            $.ajax({
+                url: "/admin/product/controlBarcode",
+                method: 'POST',
+                data: formData,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $product.prop("disabled", true);
+                    if (data == "true") {
+                        setTimeout(function () {
+                            $barcode.parent().find(".info-span i").removeClass("fa-times");
+                            $barcode.parent().find(".info-span i").addClass("fa-check");
+                            $barcode.parent().find(".info-span").removeClass("failed");
+                            $barcode.parent().find(".info-span").addClass("correct");
+                            $("#productBarcodeCheck").val("1");
+                        }, 300);
+                        if ($amount.val() != "") {
+                            formData = new FormData();
+                            formData.append("barcode", $barcode.val());
+                            formData.append("amount", $amount.val());
+                            $.ajax({
+                                url: "/admin/saleprocess/gettotal",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    $total.attr("value", data.total);
+                                    $price.attr("value", data.salePrice);
+                                },
+                            });
+                        }
+                    }
+                    else {
+                        setTimeout(function () {
+                            $barcode.parent().find(".info-span i").removeClass("fa-check");
+                            $barcode.parent().find(".info-span i").addClass("fa-times");
+                            $barcode.parent().find(".info-span").removeClass("correct");
+                            $barcode.parent().find(".info-span").addClass("failed");
+                        }, 500);
+                    }
+                },
+            });
+        });
+
+    </script>
+}

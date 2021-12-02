@@ -1,0 +1,200 @@
+﻿@model Email
+@inject IUnitOfWork _uow
+@{ 
+    ViewData["Title"] = "E-Posta Gönder";
+}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">E-Posta</li>
+                        <li class="breadcrumb-item active">Yaz</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card">
+                <div class="card-header bg-gradient-indigo">
+                    <h3 class="card-title text-white">Email Gönder</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <section class="content">
+                        <div class="container-fluid">
+                            <div class="row">
+                                @await Component.InvokeAsync("EmailSidebar")
+                                <div class="col-md-9">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Yeni Mail Gönder</h3>
+                                        </div>
+                                        <!-- /.card-header -->
+                                        <form id="compose_form" asp-controller="email" asp-action="compose" method="post" enctype="multipart/form-data">
+                                            <div class="card-body">
+                                                @if (ViewBag.ErrorMessage != null)
+                                                {
+                                                    <div class="alert alert-danger d-block">
+                                                        @ViewBag.ErrorMessage
+                                                    </div>
+                                                }
+                                            <input type="hidden" asp-for="Id">
+                                                @if (Model.Id != 0 && Model.ReceiverRole != null && Model.ReceiverId > 0)
+                                                {
+                                                    var receiverEmail = _uow.Admin.GetEmailByIdByRole(Model.ReceiverRole, Convert.ToInt32(Model.ReceiverId));
+                                                    <div class="form-group mb-2">
+                                                        <input class="form-control" placeholder="Alıcı Email Adresi:" name="ReceiverEmail" id="ReceiverEmail" value="@receiverEmail">
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="form-group mb-2">
+                                                        <input class="form-control" placeholder="Alıcı Email Adresi:" name="ReceiverEmail" id="ReceiverEmail">
+                                                    </div>
+                                                }
+                                                <div class="form-group mb-2">
+                                                    <input class="form-control" placeholder="Konu:" asp-for="Subject">
+                                                    <span asp-validation-for="Subject"></span>
+                                                </div>
+                                                <div class="form-group mb-2">
+                                                    <textarea id="compose-textarea" asp-for="Description" class="form-control textarea" style="height: 300px; display: none;"></textarea>
+                                                    <span asp-validation-for="Description"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="btn btn-default btn-file">
+                                                        <i class="fas fa-paperclip"></i> Dosya
+                                                        <input type="file" name="attachments" multiple>
+                                                    </div>
+                                                    <p class="help-block">Max. 10MB</p>
+                                                </div>
+
+                                            </div>
+                                            <!-- /.card-body -->
+                                            <div class="card-footer">
+                                                <div class="float-right">
+                                                    <button type="button" class="save_draft btn btn-default"><i class="fas fa-pencil-alt"></i> Taslak</button>
+                                                    <button type="submit" class="btn_send btn btn-primary "><i class="far fa-envelope"></i> Gönder</button>
+                                                </div>
+                                                <a asp-action="inbox" class="btn btn-default mr-4"><i class="fas fa-times"></i> İptal Et</a>
+                                                <div class='alert py-2'></div>
+                                            </div>
+                                            <!-- /.card-footer -->
+                                        </form>
+
+                                    </div>
+                                    <!-- /.card -->
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div><!-- /.container-fluid -->
+                    </section>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+@section script{
+    <script>
+
+        var saveEmail = function () {
+            const formData = new FormData();
+            formData.append("Id", $("#Id").val());
+            formData.append("ReceiverEmail", $("#ReceiverEmail").val());
+            formData.append("Subject", $("#Subject").val());
+            formData.append("Description", $("#compose-textarea").summernote("code"));
+            formData.append("filter", "draft");
+            $.ajax({
+                url: "/admin/email/compose",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                data: formData
+            }).done(function (data) {
+                $('button, a, .btn').removeClass("non-click-link");
+                if (data == "error") {
+                    $("#compose_form .card-footer .alert ").text("Yeterli içerik olmadığı için taslak olarak kaydedemiyoruz.");
+                    $("#compose_form .card-footer .alert ").addClass("alert-danger d-block");
+                    $("#compose_form .card-footer .alert ").fadeIn("200");
+                    setTimeout(function () { $("#compose_form .card-footer .alert ").removeClass("d-block alert-danger").fadeOut("200"); }, 4000);
+                }
+                else if (data == "wrong-email") {
+                    $("#compose_form .card-footer .alert ").text("Bu e-postaya sahip bir kullanıcımız yoktur.");
+                    $("#compose_form .card-footer .alert ").addClass("d-block alert-warning");
+                    $("#compose_form .card-footer .alert ").fadeIn("200");
+                    setTimeout(function () { $("#compose_form .card-footer .alert ").removeClass("d-block alert-warning").fadeOut("200"); }, 4000);
+                }
+                else if (data == "same-email") {
+                    $("#compose_form .card-footer .alert ").text("Kendinize e-posta gönderemezsiniz.");
+                    $("#compose_form .card-footer .alert ").addClass("d-block alert-warning");
+                    $("#compose_form .card-footer .alert ").fadeIn("200");
+                    setTimeout(function () { $("#compose_form .card-footer .alert ").removeClass("d-block alert-warning").fadeOut("200"); }, 4000);
+                }
+                else {
+                    $("#Id").val(data.id);
+                    console.log(data);
+                    $("#compose_form .card-footer .alert ").addClass("d-block alert-success");
+                    $("#compose_form .card-footer .alert ").text("Taslak olarak kaydedildi.");
+                    $("#compose_form .card-footer .alert ").fadeIn("200");
+                    setTimeout(function () { $("#compose_form .card-footer .alert ").removeClass("d-block alert-success").fadeOut("200"); }, 3500);
+                    setTimeout(function () { $("#compose_form .card-footer .alert ").fadeOut("200"); }, 40000);
+                }
+            });
+        };
+
+        //Control For Draft Function
+        var timer, value;
+        var draftSecond = function (str) {
+            clearTimeout(timer);
+            if (str.length > 2 && value != str) {
+                timer = setTimeout(function () {
+                    value = str;
+                    saveEmail();
+                }, 2000);
+            }
+        };
+
+        $("#compose_form").find("input, textarea").on("keyup", function () {
+            $('button, a, .btn').addClass("non-click-link");
+            draftSecond($(this).val());
+        });
+
+        $(".save_draft").on("click", function () {
+            $('button, a, .btn').addClass("non-click-link");
+            saveEmail();
+        });
+
+        $('#compose-textarea').summernote({
+            callbacks: {
+                onKeyup: function (e) {
+                    $('button, a, .btn').addClass("non-click-link");
+                    draftSecond($(this).summernote("code"));
+                }
+            }
+        });
+
+    </script>
+}

@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+@using GleamTech.AspNet.Core
+@using GleamTech.FileUltimate.AspNet.UI
+
+@{
+    var fileManager = new FileManager
+    {
+        Width = 1000,
+        Height = 1000,
+        Resizable = true
+    };
+
+    var rootFolder = new FileManagerRootFolder
+    {
+        Name = "Swapp",
+        Location = @"C:\Users\LENOVO\source\repos\Swapp"
+    };
+
+    rootFolder.AccessControls.Add(new FileManagerAccessControl
+    {
+        Path = @"\",
+        AllowedPermissions = FileManagerPermissions.Full
+    });
+
+    fileManager.RootFolders.Add(rootFolder);
+}
+
+@section style{
+    @this.RenderHead(fileManager)
+<style>
+    div#fileManager
+    {
+        height: 100%!important;
+        width: 100%!important;
+    }
+</style>
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Dosya Yöneticisi</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Dosya Yöneticisi</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @this.RenderBody(fileManager)
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

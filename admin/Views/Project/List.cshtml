@@ -1,0 +1,250 @@
+﻿@model PaginatedList<Project>
+@{
+    ViewData["Title"] = "Projeler Listesi";
+
+    var prevDisabled = !Model.PreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.NextPage ? "disabled" : "";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Projeler</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"> Projeler</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped projects">
+                            <thead>
+                                <tr>
+                                    <th>Başlık</th>
+                                    <th>Alt Başlık</th>
+                                    <th>Fotoğraf</th>
+                                    <th>
+                                        İşlemler
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() != 0)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Title</td>
+                                            <td>@item.SubTitle</td>
+                                            <td>@item.Image</td>
+                                            <td class="project-actions text-right">
+                                                @if (item.Enabled == true)
+                                                {
+                                                    <a href="#" class="btn btn-warning btn-publish" data-id="@item.Id"><i class="fa text-white fa-stop"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="#" class="btn btn-success btn-publish" data-id="@item.Id"><i class="fa text-white fa-play"></i></a>
+                                                }
+                                                <a class="btn btn-info " asp-action="manage" asp-route-id="@item.Id"><i class="fa fa-pencil-alt"></i></a>
+                                                <a class="btn btn-danger delete" data-id="@item.Id"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="4">
+                                            <p class="my-3">Henüz eklenmiş veri bulunmamaktadır.</p>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <div class="pagination-button float-right">
+                <a asp-action="List" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   class="btn btn-success @prevDisabled">Geri</a>
+                <a asp-action="List" asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   class="btn btn-success @nextDisabled">İleri</a>
+            </div>
+            <a asp-action="manage" type="button" class="btn btn-success">
+                 Ekle
+            </a>
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section script{
+    <script>
+        $(".delete").on("click", function () {
+            const itemId = $(this).data("id");
+
+            const formData = new FormData();
+            formData.append("id", itemId);
+
+            swal({
+                title: 'Silmek istediğine emin misin?',
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: "/admin/project/delete",
+                            type: "POST",
+                            processData: false,
+                            contentType: false,
+                            data: formData,
+                            success: function (data) {
+                                if (data == "success") {
+                                    swal("Silme İşlemi Başarılı");
+                                    setTimeout(function () { window.location.reload() }, 1500);
+                                }
+                                else {
+                                    swal("Silme işlemi başarılı olamadı. Tekrar Deneyiniz.");
+                                }
+
+                            },
+                            error: function () {
+                                swal("Silme işlemi başarılı olamadı. Tekrar Deneyiniz.");
+                            }
+                        });
+
+                        swal("Poof! Seçtiğin nesne veritabanından silindi!", {
+                            icon: "success",
+                        });
+                    } else {
+                        swal("Silme işlemi iptal edildi!");
+                    }
+                });
+        });
+
+        $(".btn-publish").on("click", function () {
+            var itemId = $(this).data("id");
+
+            swal("Durumunu aktifleştireceksiniz. Emin misiniz?", {
+                buttons: {
+                    cancel: "Geri Dön",
+                    catch: {
+                        text: "Yayınla",
+                        value: "catch",
+                        closeModal: false,
+                    },
+                    pause: {
+                        text: "Duraklat",
+                        value: "pause",
+                        closeModal: false,
+                    },
+                },
+            })
+                .then((value) => {
+                    switch (value) {
+                        case "pause":
+                            var formData = new FormData();
+                            formData.append("itemId", itemId);
+                            formData.append("enabled", false);
+
+                            $.ajax({
+                                url: "/admin/project/publishstatus",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    if (data == "no") {
+                                        swal("Owww!", "Duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                    }
+                                    else {
+                                        swal("Heey", "Duraklatıldı.", "success");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                },
+                                error: function () {
+                                    swal("Owww!", "Duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                }
+                            });
+                            break;
+
+                        case "catch":
+
+                            //Ajax
+                            var formData = new FormData();
+                            formData.append("itemId", itemId);
+                            formData.append("enabled", true);
+
+                            $.ajax({
+                                url: "/admin/project/publishstatus",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    if (data == "no") {
+                                        swal("Owww!", "Yayınlanamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                    }
+                                    else {
+                                        swal("Harika!", "Yayınlandı!", "success");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                },
+                                error: function () {
+                                    swal("Owww!", "Yayınlanamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                }
+                            });
+
+                            break;
+
+                        default:
+                            swal("Görüşürüz!");
+                    }
+                });
+
+        });
+    </script>
+}

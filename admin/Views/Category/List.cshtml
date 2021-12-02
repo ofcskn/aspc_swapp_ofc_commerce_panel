@@ -1,0 +1,204 @@
+﻿@model PaginatedList<Category>
+@inject IUnitOfWork _uow
+@{
+    ViewData["Title"] = "Kategori Listesi";
+    var i = 1;
+
+    var prevDisabled = !Model.PreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.NextPage ? "disabled" : "";
+    var role = _uow.Admin.GetRoleByAdmin;
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Kategori</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Kategoriler</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped projects">
+                            <thead>
+                                <tr>
+                                    <th style="width: 1%">
+                                        #
+                                    </th>
+                                    <th style="width: 20%">
+                                        Kategori Adı
+                                    </th>
+                                    <th style="width: 8%" class="text-center">
+                                        Ürün Sayısı
+                                    </th>
+                                    @if (role != "current")
+                                    {
+                                        <th style="width: 20%">
+                                        </th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() != 0)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @i
+                                            </td>
+                                            <td>
+                                                <a>
+                                                    @item.Name
+                                                </a>
+                                            </td>
+                                            <td class="project-state">
+                                                <span class="badge badge-success"><b>@item.Product.Count()</b> Ürün</span>
+                                            </td>
+                                            @if (role != "current")
+                                            {
+                                                <td class="project-actions text-right">
+                                                    <button data-toggle="modal" data-target="#modal-xl" type="button" data-id="@item.Id" data-name="@item.Name" class="btn btn-primary categoryUpdateBtn"><i class="fa fa-pencil-alt"></i></button>
+                                                </td>
+                                            }
+                                            <td class="d-none">@(i++)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="3">
+                                            <p class="my-3">Henüz eklenmiş kategori verisi bulunmamaktadır.</p>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <!-- /.card-body -->
+            </div>
+            <div class="pagination-button float-right">
+                <a asp-action="List" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   class="btn btn-success @prevDisabled">Geri</a>
+                <a asp-action="List" asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   class="btn btn-success @nextDisabled">İleri</a>
+            </div>
+            @if (role != "current")
+            {
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-xl">
+                    Yeni Kategori Ekle
+                </button>
+            }
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.modal -->
+@if (role != "current")
+{
+    <div class="modal fade" id="modal-xl">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Kategori İşlemleri</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="categoryForm" method="post">
+                        <input type="hidden" name="Id" value="0" class="form-control">
+                        <div class="form-group">
+                            <label for="Name">Kategori Adı</label>
+                            <input name="Name" placeholder="Beyaz Eşya" class="form-control">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+                    <button id="categoryAddBtn" type="button" class="btn btn-primary">Ekle</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+}
+
+<!-- /.modal -->
+<!-- /.content-wrapper -->
+@section script{
+    <script>
+        $("#categoryAddBtn").on("click", function () {
+            const categoryId = $("#categoryForm input[name='Id']").val();
+            const categoryName = $("#categoryForm input[name='Name']").val();
+
+            const formData = new FormData();
+            formData.append("Name", categoryName);
+            formData.append("Id", categoryId);
+
+            console.log(categoryName);
+            console.log(categoryId);
+            $.ajax({
+                url: "/admin/category/manage",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData
+            }).done(function (data) {
+                if (data == "ok") {
+                    swal("Kategori ekleme başarılı.");
+                    setTimeout(function () { window.location.reload(); }, 1500);
+                }
+                else {
+                    swal("Kategori ekleme başarısız. Lütfen gerekli alanları doldurduğunuzdan emin olun.");
+                }
+            });
+
+        });
+
+        $(".categoryUpdateBtn").on("click", function () {
+            const categoryId = $(this).data("id");
+            const categoryName = $(this).data("name");
+
+            $("#categoryForm input[name='Id']").val(categoryId);
+            $("#categoryForm input[name='Name']").val(categoryName);
+        });
+    </script>
+}

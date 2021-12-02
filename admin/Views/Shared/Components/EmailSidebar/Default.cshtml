@@ -1,0 +1,79 @@
+﻿@model EmailSideBarViewModel
+
+<div class="col-md-3">
+    <a asp-controller="email" asp-action="inbox" class="btn btn-primary btn-block mb-3">Gelen Kutusuna Dön</a>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Dosyalar</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item active">
+                    <a asp-controller="email" asp-action="inbox" asp-route-filter="receive" class="nav-link">
+                        <i class="fas fa-inbox"></i> Gelen Kutusu
+                        <span class="badge bg-gradient-success float-right">@Model.TotalReceived</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="email" asp-action="inbox" asp-route-filter="send" class="nav-link">
+                        <i class="far fa-envelope"></i> Gönderilenler
+                        <span class="badge bg-gradient-fuchsia float-right">@Model.TotalSended</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="email" asp-action="inbox" asp-route-filter="draft" class="nav-link">
+                        <i class="far fa-file-alt"></i> Taslaklar
+                        <span class="badge bg-gradient-indigo float-right">@Model.TotalDrafted</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="email" asp-action="inbox" asp-route-filter="favourite" class="nav-link">
+                        <i class="fas fa-filter"></i> Favoriler
+                        <span class="badge bg-gradient-blue float-right">@Model.TotalFavourite</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="email" asp-action="inbox" asp-route-filter="trash" class="nav-link">
+                        <i class="far fa-trash-alt"></i> Çöptekiler
+                        <span class="badge bg-gradient-danger float-right">@Model.TotalTrash</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Etiketler</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body p-0">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="far fa-circle text-danger"></i> Önemli</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="far fa-circle text-warning"></i> Promosyonlar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="far fa-circle text-primary"></i> Sosyal</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</div>

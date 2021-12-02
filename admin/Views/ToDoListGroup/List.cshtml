@@ -1,0 +1,417 @@
+﻿@model ToDoListViewModel
+
+@{
+    ViewData["Title"] = "Yapılacaklar Listesi Grupları";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Yapılacaklar</li>
+                        <li class="breadcrumb-item active">Gruplar</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Yapılacaklar Listesi  Grupları</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12 alert alert-success toDoAlert" role="alert">
+                        <p></p>
+                    </div>
+                    @if (Model.PToDoListGroups.Count() > 0)
+                    {
+                        <section class="todo_groups">
+                            <div class="row">
+                                @foreach (var item in Model.PToDoListGroups)
+                                {
+                                    var bgimage = item.Image == null ? "default.png" : item.Image;
+                                    var iconImage = item.Icon == null ? "default-icon.png" : item.Icon;
+                                    <div class="col-xl-4 col-md-6 col-12 mb-3">
+                                        <div class="position-relative">
+                                            <div class="position-relative todo_ribbon_overlay">
+                                                <img class="todo_ribbon_icon rounded-circle" width="50" height="50" src="/admin/img/todolistgroup/@iconImage" alt="" />
+                                                <img class="todo_group__image w-100" src="/admin/img/todolistgroup/@bgimage" alt="" />
+                                            </div>
+                                            <div class="todo_group__box" style="border-color:@item.Color;">
+                                                <div class="ribbon-wrapper ribbon-xl">
+                                                    <div class="ribbon" style="background-color:@item.Color;color:@item.TitleColor;">
+                                                        @item.Title
+                                                    </div>
+                                                </div>
+                                                <div class="ribbon_content">
+                                                    <div class="ribbon_top">
+                                                        <div class="ribbon_top_left">
+                                                            <b class="ml-2">@item.ToDoListUser.Count() Üye</b>
+                                                        </div>
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn swapp_btn dropdown-toggle" data-toggle="dropdown" style="background-color:@item.Color;color:@item.TitleColor;">
+                                                                <span><i class="fa fa-bars" style="color:@item.TitleColor;"></i></span>
+                                                                <div class="dropdown-menu" role="menu">
+                                                                    <a data-groupid="@item.Id" class=" add_user_btn dropdown-item"><i class="fa fa-user"></i> Üye Ekle</a>
+                                                                    <a data-groupid="@item.Id" class="get_all_user__btn dropdown-item"><i class="fa fa-users"></i> Tüm Üyeler</a>
+                                                                    <a class="redirect_link dropdown-item" asp-controller="todolistgroup" asp-action="manage" asp-route-groupid="@item.Id">Alt Grup Ekle</a>
+                                                                    <a class="redirect_link dropdown-item" asp-controller="todolistgroup" asp-action="manage" asp-route-id="@item.Id">Düzenle</a>
+                                                                </div>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <p class="ribbon_desc">@item.ShortDescription</p>
+                                                    <div class=" mt-auto">
+                                                        @if (Model.ToDoListGroups.Any(p => p.GroupId == item.Id))
+                                                        {
+                                                            <a asp-controller="todolistgroup" asp-action="list" asp-route-groupid="@item.Id" class="btn swapp_btn" style="border-color:@item.Color;color:@item.Color;">Alt Gruplar</a>
+                                                        }
+                                                        <a asp-controller="todolist" asp-action="list" asp-route-groupid="@item.Id" class="btn swapp_btn" style="border-color:@item.Color;color:@item.Color;">Yapılacaklar Listesi</a>
+                                                        <a asp-controller="todolistgroup" asp-action="detail" asp-route-id="@item.Id" class="btn swapp_btn" style="border-color:@item.Color;color:@item.Color;">Detaya Git</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </section>
+                    }
+                    else
+                    {
+                        <p>Herhangi bir sonuç bulamadık. Bir şeyler eklemeyi deneyin.</p>
+                    }
+                    <div class="action_buttons">
+                        <div class="other_actions">
+                            <a class="btn btn-info" asp-controller="todolistgroup" asp-action="manage">Ana Grup Ekle</a>
+                        </div>
+                        <div class="pagination-button">
+                            @{
+                                var prevDisabled = !Model.PToDoListGroups.PreviousPage ? "disabled" : "";
+                                var nextDisabled = !Model.PToDoListGroups.NextPage ? "disabled" : "";
+                            }
+                            <a asp-action="List" asp-route-pageNumber="@(Model.PToDoListGroups.PageIndex - 1)"
+                               class="btn btn-success @prevDisabled">Geri</a>
+                            <a asp-action="List" asp-route-pageNumber="@(Model.PToDoListGroups.PageIndex + 1)"
+                               class="btn btn-success @nextDisabled">İleri</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<div class="modal fade" id="user_modal">
+    <div class="modal-dialog">
+        <div class="modal-content bg-light">
+            <div class="overlay-wrapper d-none">
+                <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="overlay_text text-bold pt-2">Tamamlanıyor...</div></div>
+            </div>
+            <div class="modal-header">
+                <h4 class="modal-title">Üye Ekle</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="user_modal_actions">
+                    <a class="btn btn-outline-success select_user_btn__modal" data-filter="admin" href="javascript:;">Yöneticiler</a>
+                    <a class="btn btn-outline-success select_user_btn__modal" data-filter="staff" href="javascript:;">Personeller</a>
+                </div>
+                <input type="hidden" id="todolist_groupid__modal" />
+                <input type="hidden" id="user_list_filter" />
+                <div class="user_list__modal mt-4">
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Kapat</button>
+                <a href="javascript:;" class="btn btn-outline-success add_user_btn__modal d-none">Ekle</a>
+                <a href="javascript:;" class="btn btn-outline-danger delete_user__btn d-none"><i class="fa fa-times"></i></a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@section style{
+    <style>
+        .user_list__modal
+        {
+            height: 400px;
+            overflow-y: scroll;
+        }
+
+        .user_box.active
+        {
+            border: 2px solid #00db8a;
+        }
+    </style>
+}
+@section script{
+    <script>
+        var pageNumber = 0;
+        $(".add_user_btn").on("click", function () {
+            pageNumber = 0;
+
+            $(".user_list__modal").html("<div class='overlay-wrapper'> <div class='user_modal__desc'>  <i class='fa fa-search'></i><div class='overlay_text text-bold pt-2'>Adımları takip ederek grubunuza üye ekleyin.</div></div> </div>");
+            $(".user_modal_actions").addClass("d-flex");
+            $("#user_modal #todolist_groupid__modal").val($(this).data("groupid"));
+
+            $(".delete_user__btn").addClass("d-none");
+            $(".add_user_btn__modal").removeClass("d-none");
+
+            $("#user_modal").modal("show");
+        });
+
+        $(".get_all_user__btn").on("click", function () {
+            pageNumber = 0;
+
+            $(".add_user_btn__modal").addClass("d-none");
+            $(".delete_user__btn").removeClass("d-none");
+
+            $(".user_modal_actions").addClass("d-none");
+            $("#user_modal #todolist_groupid__modal").val($(this).data("groupid"));
+
+            var formData = new FormData();
+            var filter = "added-users";
+            var groupId = $("#user_modal #todolist_groupid__modal").val();
+
+            formData.append("filter", filter);
+            formData.append("groupId", groupId);
+            formData.append("pageNumber", pageNumber);
+
+            $("#user_list_filter").val(filter);
+
+            $.ajax({
+                url: "/admin/todolistgroup/GetUsers",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData
+            }).done(function (data) {
+                console.log(data.length);
+                if (data.length > 0) {
+                    pageNumber++;
+                    $(".user_list__modal .overlay-wrapper").addClass("d-none");
+                    setTimeout(function () {
+                        $.each(data, function (index, value) {
+                            $("#user_modal .user_list__modal").append("<a class='info-box user_box'><img width='50' height='50' class='img-circle elevation-2' src='/admin/img/" + value.avatarSrc + "/" + value.avatar + "' alt='User Avatar'> <div class='info-box-content'><span class='info-box-text'>" + value.username + "</span> <span class='info-box-number'>" + value.fullName + "</span> </div><div class='icheck-primary d-inline'> <input class='delete_user_modal__btn' type='checkbox' value='0' data-userrole='" + value.role + "' data-userid='" + value.id + "' id='checkboxPrimary_" + value.id + "'> <label for='checkboxPrimary_" + value.id + "'> </label> </div></a>");
+                        });
+                    }, 220);
+                }
+            });
+            $("#user_modal").modal("show");
+        });
+
+        $('#user_modal').on('hide.bs.modal', function (e) {
+            $(".user_list__modal").empty();
+            $(".user_modal_actions").removeClass("d-none");
+            pageNumber = 0;
+        });
+
+
+        $(".select_user_btn__modal").on("click", function () {
+            var formData = new FormData();
+            var filter = $(this).data("filter");
+            var groupId = $("#user_modal #todolist_groupid__modal").val();
+
+            formData.append("filter", filter);
+            formData.append("groupId", groupId);
+            formData.append("pageNumber", pageNumber);
+
+            $("#user_list_filter").val(filter);
+            $.ajax({
+                url: "/admin/todolistgroup/GetUsers",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData
+            }).done(function (data) {
+                if (data != "no-data") {
+                    if (data.length > 0) {
+                        pageNumber++;
+                        $(".user_modal_actions").removeClass("d-flex");
+                        $(".user_modal_actions").addClass("d-none");
+                        $(".user_list__modal .overlay-wrapper").addClass("d-none");
+                        setTimeout(function () {
+                            $.each(data, function (index, value) {
+                                $("#user_modal .user_list__modal").append("<a class='info-box user_box'><img width='50' height='50' class='img-circle elevation-2' src='/admin/img/" + value.avatarSrc + "/" + value.avatar + "' alt='User Avatar'> <div class='info-box-content'><span class='info-box-text'>" + value.username + "</span> <span class='info-box-number'>" + value.fullName + "</span></div><div class='icheck-primary d-inline'> <input class='user_join__checkbox' type='checkbox' value='0' data-userrole='" + value.role + "' data-userid='" + value.id + "' id='checkboxPrimary_" + value.id + "'> <label for='checkboxPrimary_" + value.id + "'> </label> </div></a>");
+                            });
+                        }, 220);
+                    }
+                    else {
+                        $(".user_modal_actions").removeClass("d-none");
+                        $(".user_modal_actions").addClass("d-flex");
+                    };
+                }
+                else {
+                    $(".user_modal_actions").removeClass("d-none");
+                    $(".user_modal_actions").addClass("d-flex");
+                };
+            });
+        });
+        $('#user_modal .user_list__modal').on('scroll', function () {
+            if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+                var formData = new FormData();
+                var filter = $("#user_list_filter").val();
+                var groupId = $("#user_modal #todolist_groupid__modal").val();
+                formData.append("groupId", groupId);
+                formData.append("pageNumber", pageNumber);
+                formData.append("filter", filter);
+                var pagePost = true;
+
+                if (pagePost) {
+                    $.ajax({
+                        url: "/admin/todolistgroup/GetUsers",
+                        type: "POST",
+                        processData: false,
+                        contentType: false,
+                        data: formData
+                    }).done(function (data) {
+                        if ($.trim(data) == '' || data == "no-data") {
+                            pagePost = false;
+
+                            $("#user_modal .overlay-wrapper .overlay .overlay_text").text("Herhangi bir veri bulunamadı.");
+                        }
+                        else {
+                            $(".user_modal_actions").removeClass("d-flex");
+                            $(".user_modal_actions").addClass("d-none");
+
+                            $(".user_list__modal .overlay-wrapper").addClass("d-none");
+                            pageNumber++;
+                            setTimeout(function () {
+                                $.each(data, function (index, value) {
+                                    $("#user_modal .user_list__modal").append("<a class='info-box user_box'><img width='50' height='50' class='img-circle elevation-2' src='/admin/img/" + value.avatarSrc + "/" + value.avatar + "' alt='User Avatar'> <div class='info-box-content'><span class='info-box-text'>" + value.username + "</span> <span class='info-box-number'>" + value.fullName + "</span> </div><div class='icheck-primary d-inline'> <input class='user_join__checkbox' type='checkbox' value='0' data-userrole='" + value.role + "' data-userid='" + value.id + "' id='checkboxPrimary_" + value.id + "'> <label for='checkboxPrimary_" + value.id + "'> </label> </div></a>");
+                                });
+                            }, 220);
+                        }
+                    });
+                }
+            }
+        });
+
+        $(".add_user_btn__modal").on("click", function () {
+            $("#user_modal .overlay-wrapper").removeClass("d-none");
+            $('.user_join__checkbox:checked').each(function (i) {
+                const formData = new FormData();
+                const userId = $(this).data("userid");
+                const userRole = $(this).data("userrole");
+                const groupId = $("#todolist_groupid__modal").val();
+                formData.append("userId", userId);
+                formData.append("userRole", userRole);
+                formData.append("groupId", groupId);
+                $.ajax({
+                    url: "/admin/todolistgroup/addusertogroup",
+                    method: 'POST',
+                    data: formData,
+                    dataType: "json",
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        if (data == "found-user") {
+                            $("#user_modal .overlay-wrapper .overlay .overlay_text").text("Bu kullanıcı mevcut.");
+                            setTimeout(function () { $("#user_modal .overlay-wrapper").addClass("d-none"); $("#user_modal .overlay-wrapper .overlay .overlay_text").text("Yükleniyor!"); }, 1000);
+                        }
+                        if (data == "yes") {
+                            $("#user_modal .overlay-wrapper .overlay .overlay_text").text("Tamamlandı");
+                            setTimeout(function () { window.location.reload(); }, 1000);
+                        }
+                        if (data == "no") {
+                            $("#user_modal .overlay-wrapper .overlay .overlay_text").text("İşlem tamamlanamadı!");
+                            setTimeout(function () { $("#user_modal .overlay-wrapper").addClass("d-none"); $("#user_modal .overlay-wrapper .overlay .overlay_text").text("Yükleniyor!"); }, 1000);
+                        }
+                    }
+                });
+            });
+        });
+
+
+        $(".delete_user__btn").on("click", function () {
+            $("#user_modal .overlay-wrapper").removeClass("d-none");
+            $('.delete_user_modal__btn:checked').each(function (i) {
+                const formData = new FormData();
+                const userId = $(this).data("userid");
+                const userRole = $(this).data("userrole");
+                const groupId = $("#todolist_groupid__modal").val();
+                formData.append("userId", userId);
+                formData.append("userRole", userRole);
+                formData.append("groupId", groupId);
+                $.ajax({
+                    url: "/admin/todolistuser/delete",
+                    method: 'POST',
+                    data: formData,
+                    dataType: "json",
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        if (data == "ok") {
+                            $("#user_modal .overlay-wrapper .overlay .overlay_text").text("Tamamlandı");
+                            setTimeout(function () { window.location.reload(); }, 1000);
+                        }
+                        if (data == "no") {
+                            $("#user_modal .overlay-wrapper .overlay .overlay_text").text("İşlem tamamlanamadı!");
+                            setTimeout(function () { $("#user_modal .overlay-wrapper").addClass("d-none"); $("#user_modal .overlay-wrapper .overlay .overlay_text").text("Yükleniyor!"); }, 1000);
+                        }
+                    }
+                });
+            });
+        });
+
+        $("body").delegate(".user_join__checkbox", "click", function () {
+            if ($(this).val() == 0) {
+                $(this).closest(".user_box").addClass("active");
+                $(this).attr("value", 1);
+                $(this).prop('checked', 1);
+            }
+            else {
+                $(this).closest(".user_box").removeClass("active");
+                $(this).attr("value", 0);
+                $(this).prop('checked', 0);
+            }
+        });
+
+        $("body").delegate(".delete_user_modal__btn", "click", function () {
+            if ($(this).val() == 0) {
+                $(this).closest(".user_box").addClass("deactive");
+                $(this).attr("value", 1);
+                $(this).prop('checked', 1);
+            }
+            else {
+                $(this).closest(".user_box").removeClass("deactive");
+                $(this).attr("value", 0);
+                $(this).prop('checked', 0);
+            }
+        });
+
+
+        $('.ribbon_top .redirect_link').on("click", function () {
+            window.location = $(this).attr('href');
+        });
+    </script>
+}

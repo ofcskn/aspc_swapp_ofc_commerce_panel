@@ -1,0 +1,88 @@
+﻿
+.btn
+{
+    border-radius: 10px !important;
+}
+
+.btn-admin
+{
+    border-radius: 10px;
+    background: #0086d4;
+    color: #fff;
+    border: 1px solid #0086d4;
+}
+
+    .btn-admin:hover
+    {
+        color: #0086d4;
+        background: none;
+        border-color: #0086d4;
+        transition: 0.3s ease;
+    }
+
+.btn-outline-admin
+{
+    border-radius: 10px;
+    color: #0086d4;
+    border: 1px solid #0086d4;
+}
+
+    .btn-outline-admin:hover
+    {
+        color: #fff;
+        background: #0086d4;
+        border-color: #0086d4;
+        transition: 0.3s ease;
+    }
+
+.btn-admin-grey
+{
+    color: #000;
+    background: #cfcfcf;
+    border: 2px solid #cfcfcf;
+}
+
+    .btn-admin-grey:hover
+    {
+        color: #fff;
+        background: #9f9f9f;
+        border-color: #9f9f9f;
+    }
+
+
+.cropped-img-container
+{
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+}
+    .cropped-img-container #croppedImage
+    {
+        width:60%;
+        height:auto;
+    }
+
+
+.selectBox
+{
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    z-index: 55;
+    margin: 0 !important;
+    outline-color: #fff !important;
+    -webkit-box-shadow: 0px 0px 0px 1px #fff;
+    -moz-box-shadow: 0px 0px 0px 1px #fff;
+    box-shadow: 0px 0px 0px 1px #fff;
+}
+
+    .selectBox::before
+    {
+        border-color: #ff0000;
+    }
+
+    .selectBox:hover
+    {
+        cursor: pointer;
+    }

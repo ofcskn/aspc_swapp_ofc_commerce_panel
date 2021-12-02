@@ -1,0 +1,344 @@
+﻿@model PaginatedList<Department>
+
+@{
+    ViewData["Title"] = "Departman Listesi";
+    var i = 1;
+
+    var prevDisabled = !Model.PreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.NextPage ? "disabled" : "";
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Departman</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Departmanlar</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped projects">
+                            <thead>
+                                <tr>
+                                    <th style="width: 1%">
+                                        #
+                                    </th>
+                                    <th>Ad</th>
+                                    <th class="text-right">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() != 0)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        var statusBorder = "border-enabled";
+                                        if (item.Status == false)
+                                        {
+                                            statusBorder = "border-no-enabled";
+                                        }
+                                        <tr class="@statusBorder">
+                                            <td>@i</td>
+                                            <td>
+                                                <a>
+                                                    @item.Name
+                                                </a>
+                                            </td>
+                                            <td class="project-actions text-right">
+                                                <a class="btn btn-info" asp-controller="staff" asp-action="list" asp-route-departmentid="@item.Id"><i class="fas fa-users"></i></a>
+                                                @if (item.Status == true)
+                                                {
+                                                    <a href="#" class="btn btn-warning btn-publish" data-id="@item.Id"><i class="fa text-white fa-stop"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="#" class="btn btn-success btn-publish" data-id="@item.Id"><i class="fa text-white fa-play"></i></a>
+                                                }
+                                                <button data-toggle="modal" data-target="#modal-xl" type="button" data-id="@item.Id" data-name="@item.Name" class="btn btn-primary departmentUpdateBtn"><i class="fa fa-pencil-alt"></i></button>
+                                                <a class="btn btn-danger text-white delete" data-id="@item.Id"><i class="fas fa-trash "></i></a>
+                                            </td>
+                                            <td class="d-none">@(i++)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="9">
+                                            <p class="my-3">Henüz eklenmiş departman verisi bulunmamaktadır.</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-xl">
+                Yeni Departman Ekle
+            </button>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<!-- /.modal -->
+
+<div class="modal fade" id="modal-xl">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Departman İşlemleri</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="departmentForm" method="post">
+                    <input type="hidden" name="Id" value="0" class="form-control">
+                    <div class="form-group">
+                        <label for="Name">Departman Adı</label>
+                        <input name="Name" placeholder="Muhasebe" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+                <button id="departmentAddBtn" type="button" class="btn btn-primary">Ekle</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+@section script{ 
+<script>
+    $(".delete").on("click", function () {
+        var id = $(this).data("id");
+        var formData = new FormData();
+        formData.append("id", id);
+
+        swal("Departmanı sileceksiniz. Emin misiniz?", {
+            buttons: {
+                cancel: "Geri Dön",
+                delete: {
+                    text: "Sil",
+                    value: "delete",
+                    closeModal: false,
+                },
+            },
+        })
+            .then((value) => {
+                switch (value) {
+                    case "delete":
+                        $.ajax({
+                            url: "/admin/department/delete",
+                            method: 'POST',
+                            data: formData,
+                            dataType: "json",
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                swal("Heey", "Departman silindi.", "success");
+                                setTimeout(
+                                    function () {
+                                        location.reload();
+                                    }, 1500);
+                            },
+                            error: function () {
+                                swal("Owww!", "Departman silinemedi. Lütfen daha sonra tekrar dene.!", "error");
+                                setTimeout(
+                                    function () {
+                                        location.reload();
+                                    }, 1500);
+                            }
+                        });
+                        break;
+                    default:
+                        swal("Görüşürüz!");
+                        setTimeout(
+                            function () {
+                                location.reload();
+                            }, 1000);
+                }
+            });
+    });
+    $("#departmentAddBtn").on("click", function () {
+        const departmentId = $("#departmentForm input[name='Id']").val();
+        const departmentName = $("#departmentForm input[name='Name']").val();
+
+        const formData = new FormData();
+        formData.append("Name", departmentName);
+        formData.append("Id", departmentId);
+
+        console.log(departmentName);
+        console.log(departmentId);
+        $.ajax({
+            url: "/admin/department/manage",
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: formData
+        }).done(function (data) {
+            if (data == "ok") {
+                swal("Departman ekleme başarılı.");
+                setTimeout(function () { window.location.reload(); }, 1500);
+            }
+            else {
+                swal("Departman ekleme başarısız. Lütfen gerekli alanları doldurduğunuzdan emin olun.");
+            }
+        });
+
+    });
+
+    $(".departmentUpdateBtn").on("click", function () {
+        const departmentId = $(this).data("id");
+        const departmentName = $(this).data("name");
+
+        $("#departmentForm input[name='Id']").val(departmentId) ;
+        $("#departmentForm input[name='Name']").val(departmentName);
+    });
+</script>
+<script>
+    $(".btn-publish").on("click", function () {
+        var departmentId = $(this).data("id");
+
+        swal("Siteyi yayınlayacaksınız. Emin misiniz?", {
+            buttons: {
+                cancel: "Geri Dön",
+                catch: {
+                    text: "Yayınla",
+                    value: "catch",
+                    closeModal: false,
+                },
+                pause: {
+                    text: "Duraklat",
+                    value: "pause",
+                    closeModal: false,
+                },
+            },
+        })
+            .then((value) => {
+                switch (value) {
+                    case "pause":
+                        var formData = new FormData();
+                        formData.append("departmentId", departmentId);
+                        formData.append("enabled", false);
+
+                        $.ajax({
+                            url: "/admin/department/publishstatus",
+                            method: 'POST',
+                            data: formData,
+                            dataType: "json",
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                if (data == "no") {
+                                    swal("Owww!", "Departman duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                                else {
+                                    swal("Heey", "Departman duraklatıldı.", "success");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            },
+                            error: function () {
+                                swal("Owww!", "Departman duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                setTimeout(
+                                    function () {
+                                        location.reload();
+                                    }, 1500);
+                            }
+                        });
+                        break;
+
+                    case "catch":
+
+                        //Ajax
+                        var formData = new FormData();
+                        formData.append("departmentId", departmentId);
+                        formData.append("enabled", true);
+
+                        $.ajax({
+                            url: "/admin/department/publishstatus",
+                            method: 'POST',
+                            data: formData,
+                            dataType: "json",
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                if (data == "no") {
+                                    swal("Owww!", "Departman yayınlanamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                                else {
+                                    swal("Harika!", "Departman yayınlandı!", "success");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            },
+                            error: function () {
+                                swal("Owww!", "Departman yayınlanamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                setTimeout(
+                                    function () {
+                                        location.reload();
+                                    }, 1500);
+                            }
+                        });
+
+                        break;
+
+                    default:
+                        swal("Görüşürüz!");
+                        setTimeout(
+                            function () {
+                                location.reload();
+                            }, 1000);
+                }
+            });
+
+    });
+</script>
+}

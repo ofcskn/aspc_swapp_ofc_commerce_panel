@@ -1,0 +1,103 @@
+﻿@model MenuViewModel
+
+@{
+    var profileAvatar = "~/img/admin/default.jpg";
+    var smallImage = "-s";
+    var userRole = Model.userRole == "admin" ? "Yönetici" : Model.userRole;
+    userRole = userRole == "staff" ? "Personel" : userRole;
+    userRole = userRole == "current" ? "Üye" : userRole;
+    userRole = userRole == "user" ? "Kullanıcı" : userRole;
+
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    var actionName = ViewContext.RouteData.Values["action"].ToString();
+}
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+        <span class="brand-text font-weight-light ml-3">SWAPP-ÖFC</span>
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                @if (Model.userImage == null)
+                {
+                    profileAvatar = "/admin/img/admin/default.jpg";
+                }
+                else if (Model.userRole == "staff")
+                {
+                    profileAvatar = "/admin/img/staff/" + Model.userImage;
+                }
+                else if (Model.userRole == "admin" || Model.userRole == "user")
+                {
+                    profileAvatar = "/admin/img/admin/" + Model.userImage;
+                }
+                else if (Model.userRole == "current")
+                {
+                    profileAvatar = "/admin/img/current/" + Model.userImage;
+                }
+                else
+                {
+                    profileAvatar = "/admin/img/admin/default.jpg";
+                }
+                @{
+                    var fileName = profileAvatar.Substring(0, profileAvatar.IndexOf("."));
+                    var webImage = fileName + ".webp";
+
+                    var profileAvatarS = fileName + smallImage + ".jpg";
+
+                    var fileName2 = profileAvatarS.Substring(0, profileAvatarS.IndexOf("."));
+                    var webImage2 = fileName2 + ".webp";
+                }
+                <a><img src="@fileName" srcset="@webImage 50w" class="img-circle elevation-2" alt="User Image"></a>
+            </div>
+            @*<p class="text-white"><span>Oturumun Sonlanmasına</span> <span id="backdown_timer" class="badge badge-important"></span></p>*@
+
+            <div class="info ">
+                <a href="#" class="d-block">@Model.userName</a>
+                <b class="text-white ">@userRole</b>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2 sidebar_menu">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+
+                @foreach (var item in Model.Menus)
+                {
+                    if (item.ParentId == null)
+                    {
+                        var childItems = Model.Menus.Where(p => p.ParentId == item.Id).OrderBy(p => p.Priority);
+                        if (childItems.Any())
+                        {
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="@item.FontAwesomeClass nav-icon"></i>
+                                    <p>@item.Title</p>
+                                    <i class="right fas fa-angle-left"></i>
+                                </a>
+                                <partial name="_ChildSidebarItem" model="new MenuViewModel { Menus = Model.Menus, Menu = item}" />
+                            </li>
+                        }
+                        else
+                        {
+                            var permalink = item.ControllerName + "/" + item.ActionName;
+                            <li class="nav-item">
+                                <a href="/admin/@permalink" class="nav-link">
+                                    <i class="@item.FontAwesomeClass nav-icon"></i>
+                                    <p>@item.Title</p>
+                                </a>
+                            </li>
+
+                        }
+                    }
+                }
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

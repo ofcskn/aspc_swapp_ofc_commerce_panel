@@ -1,0 +1,533 @@
+﻿@model CalendarViewModel
+@inject IUnitOfWork _uow
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Takvim</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/admin-lte/plugins/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- fullCalendar -->
+    <link rel="stylesheet" href="~/admin-lte/plugins/fullcalendar/main.min.css">
+    <link rel="stylesheet" href="~/admin-lte/plugins/fullcalendar-daygrid/main.min.css">
+    <link rel="stylesheet" href="~/admin-lte/plugins/fullcalendar-timegrid/main.min.css">
+    <link rel="stylesheet" href="~/admin-lte/plugins/fullcalendar-bootstrap/main.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/admin-lte/dist/css/adminlte.min.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="~/admin-lte/plugins/summernote/summernote-bs4.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <style>
+        .fc-today .fc-day-number
+        {
+            color: #000;
+            font-weight: bold;
+        }
+
+        .fc-today
+        {
+            background: #ffcde1 !important;
+            border: none !important;
+            border-top: 1px solid #ddd !important;
+        }
+    </style>
+</head>
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <!-- Navbar -->
+        @await Component.InvokeAsync("TopNavbar")
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        @await Component.InvokeAsync("Sidebar")
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Takvim</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                                <li class="breadcrumb-item active">Takvim</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="sticky-top mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Sürüklenebilir Etkinlikler(Aktif Değil)</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- the events -->
+                                        <div id="external-events">
+                                            <input type="hidden" id="external_event_id" value="" />
+                                            <div class="external-event bg-success">Kahvaltı Yap</div>
+                                            <div class="external-event bg-gradient-danger">Eve Git</div>
+                                            <div class="external-event bg-gradient-blue">Duş Al</div>
+                                            <div class="external-event bg-gradient-fuchsia">Yemek Yap</div>
+                                            <div class="external-event bg-gradient-dark">Derse Gir</div>
+                                            <div class="external-event bg-gradient-indigo">Uyu</div>
+                                            <div class="external-event bg-warning">Toplantıya Katıl</div>
+                                            <div class="external-event bg-purple">Yemek Ye</div>
+                                            <div class="checkbox">
+                                                <label for="drop-remove">
+                                                    <input type="checkbox" id="drop-remove">
+                                                    sürükledikten sonra kaldır
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                                <!-- /.card -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Etkinlik Ekle</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
+                                            <!--<button type="button" id="color-chooser-btn" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>-->
+                                            <ul class="fc-color-picker" id="color-chooser">
+                                                <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
+                                                <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
+                                                <li><a class="text-success" href="#"><i class="fas fa-square"></i></a></li>
+                                                <li><a class="text-danger" href="#"><i class="fas fa-square"></i></a></li>
+                                                <li><a class="text-blue" href="#"><i class="fas fa-square"></i></a></li>
+                                                <li><a class="text-muted" href="#"><i class="fas fa-square"></i></a></li>
+                                                <li><a class="text-indigo" href="#"><i class="fas fa-square"></i></a></li>
+                                                <li><a class="text-teal" href="#"><i class="fas fa-square"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <!-- /btn-group -->
+                                        <div class="input-group">
+                                            <input id="new-event" type="text" class="form-control" placeholder="Etkinlik Başlığı">
+
+                                            <div class="input-group-append">
+                                                <button id="add-new-event" type="button" class="btn btn-primary">Ekle</button>
+                                            </div>
+                                            <!-- /btn-group -->
+                                        </div>
+                                        <!-- /input-group -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-md-9">
+                            <div class="card card-primary">
+                                <div class="card-body p-0">
+                                    <!-- THE CALENDAR -->
+                                    <div id="calendar"></div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- /.modal -->
+
+        <div class="modal fade" id="modal-xl">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Düzenle</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="event_form" method="post">
+                            <input type="hidden" name="Id" value="0" class="form-control">
+                            <div class="form-group">
+                                <label for="Title">Başlık</label>
+                                <input name="Title" placeholder="Toplantı" value="" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="Subject">Konu</label>
+                                <input name="Subject" placeholder="İş Toplantısı" value="" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="Description">Açıklama</label>
+                                <textarea name="Description" placeholder="Açıklama" class="summernote"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="BorderColor">Kenarlık Rengi</label>
+                                <input type="color" name="BorderColor" />
+                            </div>
+                            <div class="form-group">
+                                <label for="BackgroundColor">Arka Plan Rengi</label>
+                                <input type="color" name="BackgroundColor" />
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="AllDay" value="">
+                                    <label class="form-check-label" for="AllDay">
+                                        Tüm Gün Etkinliği
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Status" value="">
+                                    <label class="form-check-label" for="Status">
+                                        Durum
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+                        <button id="event_edit__btn" type="button" class="btn btn-primary">Ekle</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+        <partial name="_Footer" />
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    <!-- jQuery -->
+    <script src="~/admin-lte/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Jquery Backdown Timer -->
+    <script src="~/lib/jquery-countdown-timer/dist/js/jQuery.countdownTimer.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="~/admin-lte/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/admin-lte/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <!-- Summernote -->
+    <script src="~/admin-lte/plugins/summernote/summernote-bs4.min.js"></script>
+    <script src="~/admin-lte/dist/js/demo.js"></script>
+    <script src="/admin/js/site.js"></script>
+    <!-- fullCalendar 2.2.5 -->
+    <script src="~/admin-lte/plugins/moment/moment.min.js"></script>
+    <script src="~/admin-lte/plugins/fullcalendar/main.min.js"></script>
+    <script src="~/admin-lte/plugins/fullcalendar-daygrid/main.min.js"></script>
+    <script src="~/admin-lte/plugins/fullcalendar-timegrid/main.min.js"></script>
+    <script src="~/admin-lte/plugins/fullcalendar-interaction/main.min.js"></script>
+    <script src="~/admin-lte/plugins/fullcalendar-bootstrap/main.min.js"></script>
+    <!-- Page specific script -->
+    <script>
+
+        $(function () {
+
+            /* initialize the external events
+             -----------------------------------------------------------------*/
+            function ini_events(ele) {
+
+                ele.each(function () {
+
+                    // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+                    // it doesn't need to have a start or end
+                    var eventObject = {
+                        title: $.trim($(this).text()), // use the element's text as the event title
+                    }
+
+                    // store the Event Object in the DOM element so we can get to it later
+                    $(this).data('eventObject', eventObject)
+
+                    // make the event draggable using jQuery UI
+                    $(this).draggable({
+                        zIndex: 1070,
+                        revert: true, // will cause the event to go back to its
+                        revertDuration: 0  //  original position after the drag
+                    });
+
+                })
+            }
+
+            //ini_events($('#external-events div.external-event'))
+
+            /* initialize the calendar
+             -----------------------------------------------------------------*/
+            //Date for the calendar events (dummy data)
+            var date = new Date()
+            var d = date.getDate(),
+                m = date.getMonth(),
+                y = date.getFullYear()
+
+            var Calendar = FullCalendar.Calendar;
+            var Draggable = FullCalendarInteraction.Draggable;
+
+            var containerEl = document.getElementById('external-events');
+            var checkbox = document.getElementById('drop-remove');
+            var calendarEl = document.getElementById('calendar');
+
+            // initialize the external events
+            // -----------------------------------------------------------------
+
+            new Draggable(containerEl, {
+                itemSelector: '.external-event',
+                eventData: function (eventEl) {
+                    //Calendar Ajax Add Event
+                    var formData = new FormData();
+                    formData.append("Title", eventEl.innerText);
+                    formData.append("BorderColor", window.getComputedStyle(eventEl, null).getPropertyValue('background-color'));
+                    formData.append("BackgroundColor", window.getComputedStyle(eventEl, null).getPropertyValue('background-color'));
+                    $.ajax({
+                        url: "/admin/calendar/addevent",
+                        method: 'POST',
+                        data: formData,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            $("#external_event_id").val(data.id);
+                        }
+                    });
+                    return {
+                        title: eventEl.innerText,
+                        backgroundColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
+                        borderColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
+                        textColor: window.getComputedStyle(eventEl, null).getPropertyValue('color'),
+                    };
+                }
+            });
+
+            var calendar = new Calendar(calendarEl, {
+                eventClick: function (event, element) {
+                    const formData = new FormData();
+                    formData.append("id", event.event.id);
+                    $.ajax({
+                        url: "/admin/calendar/get",
+                        method: 'POST',
+                        data: formData,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            console.log(data);
+                            $("#event_form").find("input[name='Id']").val(data.id);
+                            $("#event_form").find("input[name='Title']").val(data.title);
+                            $("#event_form").find("input[name='Subject']").val(data.subject);
+                            $("#event_form").find("input[name='BackgroundColor']").val(data.backgroundColor);
+                            $("#event_form").find("input[name='BorderColor']").val(data.borderColor);
+                            $("#event_form").find("textarea[name='Description']").summernote("code", data.description);
+                            $("#event_form").find("input[name='AllDay']").val(data.allDay);
+                            $("#event_form").find("input[name='Status']").val(data.status);
+                            if (data.allDay == true) {
+                                $("#event_form").find("input[name='AllDay']").attr('checked', true);
+                            }
+                            else {
+                                $("#event_form").find("input[name='AllDay']").attr('checked', false);
+                            }
+                            if (data.status == true) {
+                                $("#event_form").find("input[name='Status']").attr('checked', true);
+                            }
+                            else {
+                                $("#event_form").find("input[name='Status']").attr('checked', false);
+                            }
+                            $('#modal-xl').modal('show');
+                        }
+                    });
+
+                },
+                eventDrop: function (event, dayDelta, minuteDelta, allDay, revertFunc) {
+                    console.log(event.event.id);
+                    var startDate = calendar.formatDate(event.event.start, {
+                        month: 'long',
+                        year: 'numeric',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        second: 'numeric',
+                        hour12: true,
+                    });
+                    const formData = new FormData();
+                    formData.append("id", event.event.id);
+                    formData.append("start", startDate);
+                    $.ajax({
+                        url: "/admin/calendar/updateevent",
+                        method: 'POST',
+                        data: formData,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                    });
+                },
+                eventResize: function (info) {
+                    var endDate = calendar.formatDate(info.event.end, {
+                        month: 'long',
+                        year: 'numeric',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        second: 'numeric',
+                        hour12: true,
+                    });
+                    var formData = new FormData();
+                    formData.append("id", info.event.id);
+                    formData.append("end", endDate);
+                    $.ajax({
+                        url: "/admin/calendar/UpdateEndEvent",
+                        method: 'POST',
+                        data: formData,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                    });
+                },
+                plugins: ['bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                'themeSystem': 'bootstrap',
+                //Random default events
+                events: 'https://localhost:8092/admin/calendar/findallevents',
+                editable: true,
+                droppable: true, // this allows things to be dropped onto the calendar !!!
+                drop: function (info) {
+                    // is the "remove after drop" checkbox checked?
+                    console.log(info);
+                   
+
+                    const formData = new FormData();
+                    formData.append("id", $("#external_event_id").val());
+                    formData.append("start", info.dateStr);
+                    $.ajax({
+                        url: "/admin/calendar/UpdateStartDate",
+                        method: 'POST',
+                        data: formData,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                    });
+
+                    if (checkbox.checked) {
+                        // if so, remove the element from the "Draggable Events" list
+                        info.draggedEl.parentNode.removeChild(info.draggedEl);
+                    }
+                }
+            });
+
+            calendar.render();
+            // $('#calendar').fullCalendar()
+
+            /* ADDING EVENTS */
+            var currColor = '#3c8dbc' //Red by default
+            //Color chooser button
+            var colorChooser = $('#color-chooser-btn')
+            $('#color-chooser > li > a').click(function (e) {
+                e.preventDefault()
+                //Save color
+                currColor = $(this).css('color')
+                //Add color effect to button
+                $('#add-new-event').css({
+                    'background-color': currColor,
+                    'border-color': currColor
+                })
+            })
+            $('#add-new-event').click(function (e) {
+                e.preventDefault()
+                //Get value and make sure it is not null
+                var val = $('#new-event').val()
+                if (val.length == 0) {
+                    return
+                }
+                //Calendar Ajax Add Event
+                var formData = new FormData();
+                formData.append("Title", val);
+                formData.append("BorderColor", currColor);
+                formData.append("BackgroundColor", currColor);
+                $.ajax({
+                    url: "/admin/calendar/addevent",
+                    method: 'POST',
+                    data: formData,
+                    dataType: "json",
+                    processData: false,
+                    contentType: false,
+                    success: function () {
+                        window.location.reload();
+                    }
+                });
+
+                //Create events
+                //var event = $('<div />')
+                //event.css({
+                //    'background-color': currColor,
+                //    'border-color': currColor,
+                //    'color': '#fff'
+                //}).addClass('external-event')
+                //event.html(val)
+                //$('#external-events').prepend(event)
+
+                //Add draggable funtionality
+                ini_events(event)
+
+                //Remove event from text input
+                $('#new-event').val('')
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.summernote').summernote();
+        });
+        $("#event_edit__btn").on("click", function () {
+            console.log($("#event_form").find("input[name='BorderColor']").val());
+            const formData = new FormData();
+            formData.append("Id", $("#event_form").find("input[name='Id']").val());
+            formData.append("Title", $("#event_form").find("input[name='Title']").val());
+            formData.append("Subject", $("#event_form").find("input[name='Subject']").val());
+            formData.append("BackgroundColor", $("#event_form").find("input[name='BackgroundColor']").val());
+            formData.append("BorderColor", $("#event_form").find("input[name='BorderColor']").val());
+            formData.append("Description", $("#event_form").find("textarea[name='Description']").val());
+            formData.append("AllDay", $("#event_form").find("input[name='AllDay']").val());
+            formData.append("Status", $("#event_form").find("input[name='Status']").val());
+            $.ajax({
+                url: "/admin/calendar/manage",
+                method: 'POST',
+                data: formData,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $('#modal-xl').modal('hide');
+                    setTimeout(function () { window.location.reload() }, 500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

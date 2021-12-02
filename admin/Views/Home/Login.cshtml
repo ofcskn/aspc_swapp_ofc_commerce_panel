@@ -1,0 +1,134 @@
+﻿@{ ViewData["Title"] = "Swapp-OFC Giriş Yap";
+                Layout = "_LayoutHome"; }
+@section style{
+    <style>
+        .social-media-links
+        {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .social_link
+        {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+            .social_link.youtube_color
+            {
+                background: #cd201f;
+            }
+
+            .social_link.instagram_color
+            {
+                background: #e4405f;
+            }
+
+            .social_link.linkedin_color
+            {
+                background: #0077B5;
+            }
+
+            .social_link i
+            {
+                font-size: 26px;
+                color: #fff;
+            }
+    </style>
+}
+@section script{
+    <script>
+        $("#remember_lbl").on("click", function () {
+            if ($("#remember").val() == 0) {
+                $("#remember").val("1");
+            }
+            else {
+                $("#remember").val("0")
+            }
+        });
+    </script>
+}
+
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Giriş Yap</p>
+        @if (ViewBag.ErrorMessage != null)
+        {
+<div class="alert alert-danger">
+    @Html.Raw(ViewBag.ErrorMessage)
+</div>}
+        @if (ViewData["AlertMessage"] != null)
+        {
+<div class="alert alert-info">
+    @Html.Raw(ViewData["AlertMessage"])
+</div>}
+        <form asp-controller="Home" asp-action="Login" method="post">
+            <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+            <div class="input-group mb-3">
+                <input name="username" type="text" class="form-control" placeholder="Kullanıcı Adı" value="@ViewBag.UserName">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input name="password" type="password" class="form-control" placeholder="Şifre">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="icheck-primary">
+                        <input type="checkbox" id="remember" name="remember" value="0">
+                        <label for="remember" id="remember_lbl">
+                            Beni Hatırla
+                        </label>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-4">
+                    <button type="button" class="btn btn-primary btn-block btn_submit">Giriş Yap</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+        <div class="social-auth-links text-center my-4">
+            <a asp-controller="home" asp-action="register" class="btn btn-success">
+                <i class="far fa-user mr-2"></i> Kayıt Ol
+            </a>
+            <a asp-controller="home" asp-action="rememberpassword" class="btn btn-danger">
+                <i class="far fa-user mr-2"></i> Şifremi Unuttum
+            </a>
+        </div>
+        <div class="social-media-links text-center mb-4">
+            <a href="https://www.instagram.com/_ofcskn/" class="instagram_color social_link">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/channel/UCsp9riHWKza80r2maQOQ-2A" class="youtube_color social_link">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/ofcskn/" class="linkedin_color social_link">
+                <i class="fab fa-linkedin"></i>
+            </a>
+        </div>
+    </div>
+    <a href="/" class="btn rounded-0 bg-gradient-indigo">
+        <i class="far fa-user mr-2"></i> ANASAYFA
+    </a>
+    <a asp-controller="home" asp-action="report" class="btn rounded-0 bg-gradient-light">
+        SORUN BILDIR
+    </a>
+    <!-- /.login-card-body -->
+</div>

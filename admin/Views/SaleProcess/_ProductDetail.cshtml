@@ -1,0 +1,53 @@
+﻿@model SaleProcess
+@inject IUnitOfWork _uow
+<div class="form-group">
+    <div class="row">
+        <div class="col-6">
+            <label asp-for="Price">Ürün Fiyat</label>
+            <input type="number" class="form-control" asp-for="Price" readonly />
+        </div>
+        <div class="col-6">
+            <label asp-for="Total">Toplam Fiyat</label>
+            <input type="number" class="form-control" asp-for="Total" readonly />
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="Amount">Miktar</label>
+    <input type="number" asp-for="Amount" class="form-control">
+    <span class="text-danger" asp-validation-for="Amount"></span>
+</div>
+<div class="row">
+    <div class="col-12 mb-4 mt-3 text-center">
+        <label class=" font-italic"><b>Ürün seçiniz</b> veya <b>barkod</b> giriniz</label>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <label asp-for="ProductId">Ürün Listesi</label>
+            <select asp-for="ProductId" class="form-control custom-select">
+                <option value="" selected="" disabled="">Lütfen ürün seçiniz</option>
+                @foreach (var item in _uow.Product.GetAll().Where(p => p.Status == true))
+                {
+                    if (Convert.ToInt32(item.Stock) > 0)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                    else
+                    {
+                        <option class="bg-dark" value="" disabled>@item.Name</option>
+                    }
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="ProductId"></span>
+        </div>
+    </div>
+    <div class="col-6">
+        <label for="ProductBarcode">Barkod</label>
+        <div class=" position-relative">
+            <span class="code-hashtag"><i class="fa fa-hashtag"></i></span>
+            <input id="ProductBarcode" type="number" name="ProductBarcode" class="form-control pl-5" >
+            <span class="info-span"><i class="fa"></i></span>
+            <input type="hidden" value="0" id="productBarcodeCheck" />
+        </div>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+﻿@{
+    ViewData["Title"] = "İletişim";
+}
+
+<!-- BLOG DETAIL -->
+<cache expires-after="@TimeSpan.FromMinutes(5)">
+    @await Component.InvokeAsync("BlogDetail")
+</cache>

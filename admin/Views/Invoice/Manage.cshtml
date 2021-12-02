@@ -1,0 +1,117 @@
+﻿@model Invoice
+@inject IUnitOfWork _uow
+
+@{
+    ViewData["Title"] = "Fatura İşlemleri";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Faturalar</li>
+                        <li class="breadcrumb-item active">Yönet</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    @if (Model.Id != 0)
+                    {
+                        <h3 class="card-title">Fatura Güncelle</h3>
+                    }
+                    else
+                    {
+                <h3 class="card-title">Fatura Ekle</h3>
+                    }
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="invoice" asp-action="manage" method="post">
+                        <input type="hidden" asp-for="Id" class="form-control">
+                        <input type="hidden" asp-for="DueDate" class="form-control">
+                        <input type="hidden" asp-for="SendDate" class="form-control">
+                        <input type="hidden" asp-for="StaffId" class="form-control">
+                        <div class="form-group">
+                            <label asp-for="SerialNumber">Seri Numarası</label>
+                            <input asp-for="SerialNumber" class="form-control">
+                            <span class="text-danger" asp-validation-for="SerialNumber"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TaxAdministration">Vergi Dairesi</label>
+                            <input asp-for="TaxAdministration" class="form-control">
+                            <span class="text-danger" asp-validation-for="TaxAdministration"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CurrentId">Alıcı/Müşteri</label>
+                            <select asp-for="CurrentId" class="form-control custom-select">
+                                <option value="" selected="" disabled="">Lütfen alıcı seçiniz</option>
+                                @foreach (var item in _uow.Current.GetAllByEnabled(true))
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="CurrentId"></span>
+                        </div>
+                        <input type="submit" value="Gönder" class="btn btn-success float-left mr-2">
+                        <a class="btn btn-info " asp-action="list"><i class="fas fa-reply mr-2"></i>Listeye Dön</a>
+                    </form>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<div class="modal fade" id="modal-xl">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ürün Ekle</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm" method="post">
+                    <input type="hidden" name="Id" value="0" class="form-control">
+                    <div class="form-group">
+                        <label for="Name">Kategori Adı</label>
+                        <input name="Name" placeholder="Beyaz Eşya" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+                <button id="categoryAddBtn" type="button" class="btn btn-primary">Ekle</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

@@ -1,0 +1,298 @@
+﻿@model IQueryable<Product>
+@inject IUnitOfWork _uow
+@{
+    ViewData["Title"] = "Ürün Listesi";
+    var i = 1;
+
+    var role = _uow.Admin.GetRoleByAdmin;
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Ürün</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Ürünler</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-3">
+                    <div class="table-responsive">
+                        <table id="example_list" class="table table-striped projects">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Barkod No
+                                    </th>
+                                    <th>Ad</th>
+                                    <th>Alış Fiyatı</th>
+                                    <th>Satış Fiyatı</th>
+                                    <th>Kategori</th>
+                                    <th>Stok</th>
+                                    <th>Marka</th>
+                                    <th>İşlemler</th>
+                                    <th class="d-none">Marka</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() > 0)
+                                {
+                                    @foreach (var product in Model)
+                                    {
+                                        var statusBorder = "border-enabled";
+                                        if (product.Status == false)
+                                        {
+                                            statusBorder = "border-no-enabled";
+                                        }
+                                        <tr class="@statusBorder">
+                                            <td>@product.Barcode</td>
+                                            <td>
+                                                <a>
+                                                    @product.Name
+                                                </a>
+                                            </td>
+                                            <td>@product.PurchasePrice</td>
+                                            <td>@product.SalePrice</td>
+                                            <td>@product.Category.Name</td>
+                                            <td>@product.Stock</td>
+                                            <td class="project-state">
+                                                <span class="badge badge-success">@product.Brand</span>
+                                            </td>
+                                            <td class="project-actions text-right">
+                                                <a class="btn btn-outline-dark " asp-action="detail" asp-route-id="@product.Id"><i class="fas fa-chess-board mr-2"></i>Detay</a>
+                                                @if (role != "current")
+                                                {
+                                                    @if (product.Status == true)
+                                                    {
+                                                        <a href="#" class="btn btn-warning btn-publish" data-id="@product.Id"><i class="fa text-white fa-stop"></i></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="#" class="btn btn-success btn-publish" data-id="@product.Id"><i class="fa text-white fa-play"></i></a>
+                                                    }
+                                                    <a class="btn btn-info " asp-action="manage" asp-route-id="@product.Id"><i class="fas fa-pencil-alt"></i></a>
+                                                    <a class="btn btn-danger text-white delete" data-id="@product.Id"><i class="fas fa-trash"></i></a>
+                                                }
+                                            </td>
+                                            <td class="d-none">@(i++)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="40" class="text-center">Herhangi bir veri bulamadık. Bir şeyler eklemeyi deneyin.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <a class="btn btn-success" asp-action="manage">Yeni Ürün Ekle</a>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section style{
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+}
+@section script{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+    <script>
+        $('#example_list').DataTable({
+        });
+
+    </script>
+    <script>
+        $(".delete").on("click", function () {
+            var id = $(this).data("id");
+            var formData = new FormData();
+            formData.append("id", id);
+
+            swal("Ürünü sileceksiniz. Emin misiniz?", {
+                buttons: {
+                    cancel: "Geri Dön",
+                    delete: {
+                        text: "Sil",
+                        value: "delete",
+                        closeModal: false,
+                    },
+                },
+            })
+                .then((value) => {
+                    switch (value) {
+                        case "delete":
+                            $.ajax({
+                                url: "/admin/product/delete",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    swal("Heey", "Ürün silindi.", "success");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                },
+                                error: function () {
+                                    swal("Owww!", "Ürün silinemedi. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            });
+                            break;
+                        default:
+                            swal("Görüşürüz!");
+                            setTimeout(
+                                function () {
+                                    location.reload();
+                                }, 1000);
+                    }
+                });
+        });
+        $(".btn-publish").on("click", function () {
+            var productId = $(this).data("id");
+
+            swal("Siteyi yayınlayacaksınız. Emin misiniz?", {
+                buttons: {
+                    cancel: "Geri Dön",
+                    catch: {
+                        text: "Yayınla",
+                        value: "catch",
+                        closeModal: false,
+                    },
+                    pause: {
+                        text: "Duraklat",
+                        value: "pause",
+                        closeModal: false,
+                    },
+                },
+            })
+                .then((value) => {
+                    switch (value) {
+                        case "pause":
+                            var formData = new FormData();
+                            formData.append("productId", productId);
+                            formData.append("enabled", false);
+
+                            $.ajax({
+                                url: "/admin/product/publishstatus",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    if (data == "no") {
+                                        swal("Owww!", "Ürün duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                    else {
+                                        swal("Heey", "Ürün duraklatıldı.", "success");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                },
+                                error: function () {
+                                    swal("Owww!", "Ürün duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            });
+                            break;
+
+                        case "catch":
+
+                            //Ajax
+                            var formData = new FormData();
+                            formData.append("productId", productId);
+                            formData.append("enabled", true);
+
+                            $.ajax({
+                                url: "/admin/product/publishstatus",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    if (data == "no") {
+                                        swal("Owww!", "Ürün yayınlanamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                    else {
+                                        swal("Harika!", "Ürün yayınlandı!", "success");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                },
+                                error: function () {
+                                    swal("Owww!", "Ürün yayınlanamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            });
+
+                            break;
+
+                        default:
+                            swal("Görüşürüz!");
+                            setTimeout(
+                                function () {
+                                    location.reload();
+                                }, 1000);
+                    }
+                });
+
+        });
+    </script>
+}

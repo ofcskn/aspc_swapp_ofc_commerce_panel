@@ -1,0 +1,322 @@
+﻿@model PaginatedList<SaleProcess>
+@inject IUnitOfWork _uow
+
+@{
+    ViewData["Title"] = "Satış Listesi";
+    var i = 1;
+    var currents = _uow.Current.GetAll();
+    var staffs = _uow.Staff.GetAll();
+
+    var prevDisabled = !Model.PreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.NextPage ? "disabled" : "";
+
+    var role = _uow.Admin.GetRoleByAdmin;
+
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Satışlar</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Satış Listesi</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped projects">
+                            <thead>
+                                <tr>
+                                    <th style="width: 1%">
+                                        #
+                                    </th>
+                                    <th>Personel</th>
+                                    <th>Adet</th>
+                                    <th>Fiyat</th>
+                                    <th>Toplam</th>
+                                    <th>Alıcı</th>
+                                    <th>Tarih</th>
+                                    <th class="text-right">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() != 0)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        var statusBorder = "border-enabled";
+                                        var current = currents.FirstOrDefault(p => p.Id == Convert.ToInt32(item.CurrentId));
+                                        var staff = staffs.FirstOrDefault(p => p.Id == Convert.ToInt32(item.CurrentId));
+                                        if (item.Status == false)
+                                        {
+                                            statusBorder = "border-no-enabled";
+                                        }
+                                        <tr class="@statusBorder">
+                                            <td>@i</td>
+
+                                            <td>
+                                                @if (staff != null)
+                                                {
+                                                    <a class="text-olive" asp-controller="staff" asp-action="manage" asp-route-id="@item.StaffId">@staff.Name @staff.Surname</a>
+                                                }
+                                            </td>
+                                            <td>@item.Amount</td>
+                                            <td>@item.Price</td>
+                                            <td>@item.Total</td>
+                                            <td>
+                                                @if (current != null)
+                                                {
+                                                    <a class="text-purple" asp-controller="current" asp-action="manage" asp-route-id="@item.CurrentId">@current.Name @current.Surname</a>
+                                                }
+                                                else
+                                                {
+                                                    <span>ÜYE DEĞİL</span>
+                                                }
+                                            </td>
+                                            <td>@Convert.ToDateTime(item.Date).ToString("d")</td>
+                                            <td class="project-actions text-right">
+                                                <a class="btn btn-success" asp-controller="product" asp-action="manage" asp-route-id="@item.ProductId">Ürüne Git</a>
+                                                @if (role != "current")
+                                                {
+                                                    @if (item.Status == true)
+                                                    {
+                                                        <a href="#" class="btn btn-warning btn-publish" data-id="@item.Id"><i class="fa text-white fa-stop"></i></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="#" class="btn btn-success btn-publish" data-id="@item.Id"><i class="fa text-white fa-play"></i></a>
+                                                    }
+                                                    <a asp-action="manage" asp-route-id="@item.Id" class="btn btn-primary"><i class="fa fa-pencil-alt"></i></a>
+                                                    @if (item.CurrentId != null)
+                                                    {
+                                                        <a asp-controller="productcargo" asp-action="list" asp-route-cid="@item.CurrentId" class="btn btn-dark"><i class="fa fa-truck"></i></a>
+                                                    }
+                                                    <a class="btn btn-danger delete text-white" data-id="@item.Id"><i class="fas fa-trash"></i></a>
+                                                }
+                                            </td>
+                                            <td class="d-none">@(i++)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="text-center" colspan="8">
+                                            <p class="my-3">Henüz eklenmiş satış verisi bulunmamaktadır.</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <div class="pagination-button float-right">
+                <a asp-action="List" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   class="btn btn-success @prevDisabled">Geri</a>
+                <a asp-action="List" asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   class="btn btn-success @nextDisabled">İleri</a>
+            </div>
+            @if (role != "current")
+            {
+                <a asp-action="manage" class="btn btn-success">
+                    Ekle
+                </a>
+            }
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section script{
+    <script>
+        $(".delete").on("click", function () {
+            var id = $(this).data("id");
+            var formData = new FormData();
+            formData.append("id", id);
+
+            swal("Satışı sileceksiniz. Emin misiniz?", {
+                buttons: {
+                    cancel: "Geri Dön",
+                    delete: {
+                        text: "Sil",
+                        value: "delete",
+                        closeModal: false,
+                    },
+                },
+            })
+                .then((value) => {
+                    switch (value) {
+                        case "delete":
+                            $.ajax({
+                                url: "/admin/saleProcess/delete",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    swal("Heey", "Satış silindi.", "success");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                },
+                                error: function () {
+                                    swal("Owww!", "Satış silinemedi. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            });
+                            break;
+                        default:
+                            swal("Görüşürüz!");
+                            setTimeout(
+                                function () {
+                                    location.reload();
+                                }, 1000);
+                    }
+                });
+        });
+        $(".btn-publish").on("click", function () {
+            var saleProcessId = $(this).data("id");
+
+            swal("Personel durumunu aktifleştireceksiniz. Emin misiniz?", {
+                buttons: {
+                    cancel: "Geri Dön",
+                    catch: {
+                        text: "Yayınla",
+                        value: "catch",
+                        closeModal: false,
+                    },
+                    pause: {
+                        text: "Duraklat",
+                        value: "pause",
+                        closeModal: false,
+                    },
+                },
+            })
+                .then((value) => {
+                    switch (value) {
+                        case "pause":
+                            var formData = new FormData();
+                            formData.append("saleProcessId", saleProcessId);
+                            formData.append("enabled", false);
+
+                            $.ajax({
+                                url: "/admin/saleProcess/publishstatus",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    if (data == "no") {
+                                        swal("Owww!", "Personel duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                    else {
+                                        swal("Heey", "Personel duraklatıldı.", "success");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                },
+                                error: function () {
+                                    swal("Owww!", "Personel duraklatılamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            });
+                            break;
+
+                        case "catch":
+
+                            //Ajax
+                            var formData = new FormData();
+                            formData.append("saleProcessId", saleProcessId);
+                            formData.append("enabled", true);
+
+                            $.ajax({
+                                url: "/admin/saleProcess/publishstatus",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    if (data == "no") {
+                                        swal("Owww!", "Personel yayınlanamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                    else {
+                                        swal("Harika!", "Personel yayınlandı!", "success");
+                                        setTimeout(
+                                            function () {
+                                                location.reload();
+                                            }, 1500);
+                                    }
+                                },
+                                error: function () {
+                                    swal("Owww!", "Personel yayınlanamadı. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            });
+
+                            break;
+
+                        default:
+                            swal("Görüşürüz!");
+                            setTimeout(
+                                function () {
+                                    location.reload();
+                                }, 1000);
+                    }
+                });
+
+        });
+    </script>
+}

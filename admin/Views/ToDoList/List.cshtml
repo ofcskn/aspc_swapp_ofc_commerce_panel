@@ -1,0 +1,207 @@
+﻿@model ToDoListViewModel
+
+@{
+    ViewData["Title"] = "Yapılacaklar Listesi";
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Yapılacaklar</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Yapılacaklar</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model.ToDoListGroup != null)
+                    {
+                        <a asp-controller="todolist" asp-action="list" asp-route-groupid="@Model.ToDoListGroup.Id" class="btn btn-danger mb-3">
+                            <i class="to-do-icon fa fa-bookmark mr-2"></i> Yapılacaklar
+                        </a>
+                        <a asp-controller="todolist" asp-action="list" asp-route-groupid="@Model.ToDoListGroup.Id" asp-route-filter="h" class="btn btn-secondary mb-3">
+                            <i class="to-do-icon fa fa-history mr-2"></i>Geçmiş
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="todolist" asp-action="list" class="btn btn-danger mb-3">
+                            <i class="to-do-icon fa fa-bookmark mr-2"></i> Yapılacaklar
+                        </a>
+                        <a asp-controller="todolist" asp-action="list" asp-route-filter="h" class="btn btn-secondary mb-3">
+                            <i class="to-do-icon fa fa-history mr-2"></i>Geçmiş
+                        </a>
+                    }
+                    <div class="col-md-12 alert alert-success toDoAlert" role="alert">
+                        <p></p>
+                    </div>
+                    @{
+                        var g = Model.ToDoListGroup;
+                        string bgImage = "default.png";
+                        if (g != null)
+                        {
+                            bgImage = g.Image == null ? bgImage : g.Image;
+                        }
+                    }
+                <section class="todo_list__section">
+                    @if (g != null)
+                    {
+                        <div class="todo_group_content">
+                            <img class="todo_group__image mb-2 w-100" src="/admin/img/todolistgroup/@bgImage" alt="" />
+                            <div class="todo_group_desc">
+                                <img width="50" height="50" src="/admin/img/todolistgroup/@g.Icon" alt="" />
+                                <h2 class="todo_groups_text">@g.Title Grubu</h2>
+                                <p class="todo_groups_text">@g.ShortDescription </p>
+                            </div>
+                        </div>
+                    }
+                    <ul class="todo-list ui-sortable" data-widget="todo-list">
+                        @foreach (var item in Model.PToDoLists)
+                        {
+                            <li class="to-do-item" data-id="@item.Id">
+                                <!-- checkbox -->
+                                <div class="row">
+                                    <div class="col-1 icheck-primary d-flex justify-content-center">
+                                        <input data-id="@item.Id" type="checkbox" value="" @(Convert.ToBoolean(item.Enabled) ? "checked" : string.Empty) class="checkToDo checkbox" name="todo_@item.Id" id="todoCheck_@item.Id">
+                                        <label for="todoCheck_@item.Id"></label>
+                                    </div>
+                                    <div class="col-11 d-inline">
+                                        <span class="toDoText text" data-editable data-id="@item.Id">@item.Goal</span>
+
+                                        @{
+                                            string timeAgoText = null;
+                                            string timeAgoClass = null;
+                                            var timeSpan = DateTime.Now - item.StartDate;
+
+                                            if (timeSpan <= TimeSpan.FromSeconds(60))
+                                            {
+                                                timeAgoClass = "badge-success";
+                                                timeAgoText = string.Format("{0} saniye önce", timeSpan.Seconds);
+                                            }
+                                            else if (timeSpan <= TimeSpan.FromMinutes(60))
+                                            {
+                                                timeAgoClass = "badge-success";
+                                                timeAgoText = timeSpan.Minutes > 1 ? String.Format("{0} dakika önce", timeSpan.Minutes) : "bir dakika önce";
+                                            }
+                                            else if (timeSpan <= TimeSpan.FromHours(24))
+                                            {
+                                                timeAgoClass = "badge-info";
+                                                timeAgoText = timeSpan.Hours > 1 ? String.Format("{0} saat önce", timeSpan.Hours) : "bir saat önce";
+                                            }
+                                            else if (timeSpan <= TimeSpan.FromDays(30))
+                                            {
+                                                timeAgoClass = "badge-dark";
+                                                timeAgoText = timeSpan.Days > 1 ? String.Format("{0} gün önce", timeSpan.Days) : "dün";
+                                            }
+                                            else if (timeSpan <= TimeSpan.FromDays(365))
+                                            {
+                                                timeAgoClass = "badge-warning";
+                                                timeAgoText = timeSpan.Days > 30 ? String.Format("{0} ay önce", timeSpan.Days / 30) : "bir ay önce";
+                                            }
+                                            else
+                                            {
+                                                timeAgoClass = "badge-danger";
+                                                timeAgoText = timeSpan.Days > 365 ? String.Format("{0} yıl önce", timeSpan.Days / 365) : "bir yıl önce";
+                                            }
+                                        }
+
+                                        <!-- General tools such as edit or delete-->
+                                        <small class="badge @timeAgoClass"><i class="far fa-clock"></i> @timeAgoText</small>
+                                        <div class="tools">
+                                            <a href="javascript:;" data-id="@item.Id" class="deleteToDoBtn btn btn-danger py-0"><i class="fa fa-trash"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="form-group form-button row my-3 mx-0 ">
+                        @if (Model.ToDoListGroup != null)
+                        {
+
+                            <input name="toDoInput" data-groupid="@Model.ToDoListGroup.Id" id="toDoText" type="text" class="col-sm-10 form-control" placeholder="Kendinize hedef belirleyin." />
+                        }
+                        else
+                        {
+                            <input name="toDoInput" id="toDoText" type="text" class="col-sm-10 form-control" placeholder="Kendinize hedef belirleyin." />
+                        }
+                        <div class="col-sm-2">
+                            <a id="addToDo" href="javascript:;" class="list-create-btn btn btn-info w-100 "><i class="to-do-icon fa fa-plus "></i>EKLE</a>
+                        </div>
+                    </div>
+                </section>
+
+
+                <div class="action_buttons">
+                    @{
+                        var prevDisabled = !Model.PToDoLists.PreviousPage ? "disabled" : "";
+                        var nextDisabled = !Model.PToDoLists.NextPage ? "disabled" : "";
+                    }
+                    <div class="other_actions">
+                        @if (Model.ToDoListGroup != null)
+                        {
+                            <a class="btn btn-outline-dark" asp-controller="todolistgroup" asp-action="detail" asp-route-id="@Model.ToDoListGroup.Id">Detay</a>
+                            <a class="btn btn-info" asp-controller="todolistgroup" asp-action="list">Ana Gruplar</a>
+                        }
+                    </div>
+                    @if (Model.ToDoListGroup != null)
+                    {
+                        <div class="pagination-button">
+                            <a asp-action="List" asp-route-groupid="@g.Id" asp-route-pageNumber="@(Model.PToDoLists.PageIndex - 1)"
+                               class="btn btn-success @prevDisabled">Geri</a>
+                            <a asp-action="List" asp-route-groupid="@g.Id" asp-route-pageNumber="@(Model.PToDoLists.PageIndex + 1)"
+                               class="btn btn-success @nextDisabled">İleri</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="pagination-button">
+                            <a asp-action="List" asp-route-pageNumber="@(Model.PToDoLists.PageIndex - 1)"
+                               class="btn btn-success @prevDisabled">Geri</a>
+                            <a asp-action="List" asp-route-pageNumber="@(Model.PToDoLists.PageIndex + 1)"
+                               class="btn btn-success @nextDisabled">İleri</a>
+                        </div>
+                    }
+                </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section script{
+    <script src="~/lib/jquery-timeago/jquery.timeago.js"></script>
+    <script src="~/js/view/todolist.js" asp-append-version="true"></script>
+}

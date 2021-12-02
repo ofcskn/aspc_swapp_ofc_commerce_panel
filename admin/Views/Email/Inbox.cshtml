@@ -1,0 +1,284 @@
+﻿@model EmailInboxViewModel
+@inject IUnitOfWork _uow
+@{
+    ViewData["Title"] = "E-Posta Kutusu";
+    var prevDisabled = !Model.Emails.PreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Emails.NextPage ? "disabled" : "";
+
+    var senderId = _uow.Admin.GetIdByAdmin;
+    var senderRole = _uow.Admin.GetRoleByAdmin;
+}
+@section style{
+    <style>
+        .mailbox-subject
+        {
+            overflow: hidden;
+            text-overflow: clip;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            height: 40px;
+        }
+    </style>
+}
+@section script{
+    <script>
+        $(".btn_refresh").on("click", function () {
+            window.location.reload();
+        });
+        $(".favourite_btn").on("click", function () {
+            const emailId = $(this).data("emailid");
+            const status = $(this).attr("data-status");
+            const $this = $(this);
+
+            const formData = new FormData();
+            formData.append("emailId", emailId);
+            formData.append("filter", "favourite");
+            formData.append("status", status);
+            $.ajax({
+                url: "/admin/email/changestatus",
+                method: 'POST',
+                data: formData,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data == false) {
+                        $this.find("i").addClass("text-gray-dark");
+                        $this.find("i").removeClass("text-warning");
+                        $this.attr("data-status", "true");
+                    }
+                    else {
+                        $this.find(".fa-star").removeClass("text-gray-dark");
+                        $this.find(".fa-star").addClass("text-warning");
+                        $this.attr("data-status", "false");
+                    }
+                }
+            });
+        });
+
+        $(".select_checkbox").on("click", function () {
+            $(this).attr('value', this.checked ? 1 : 0);
+        });
+        $(".select_all__btn").on("click", function () {
+            console.log($(".select_checkbox").length);
+            $(".select_checkbox").each(function () {
+                if ($(this).val() == 0) {
+                    $(this).attr("value", 1);
+                    $(this).prop('checked', 1);
+                }
+                else {
+                    $(this).attr("value", 0);
+                    $(this).prop('checked', 0);
+                }
+            });
+        });
+        $(".delete_btn").on("click", function () {
+            if ($(this).data("filter") == "trash") {
+                if (confirm("Gerçekten tamamen silmek istiyor musunuz?")) {
+                    $('.select_checkbox:checked').each(function (i) {
+                        const formData = new FormData();
+                        const emailId = $(this).data("emailid");
+                        formData.append("emailId", emailId);
+                        $.ajax({
+                            url: "/admin/email/delete",
+                            method: 'POST',
+                            data: formData,
+                            dataType: "json",
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                window.location.reload();
+                            }
+                        });
+                    });
+                }
+            }
+            else {
+                $('.select_checkbox:checked').each(function (i) {
+                    const formData = new FormData();
+                    formData.append("filter", "trash");
+                    formData.append("status", "true");
+                    const $this = $(this);
+                    console.log($this.data("emailid"));
+                    const emailId = $(this).data("emailid");
+                    formData.append("emailId", emailId);
+                    $.ajax({
+                        url: "/admin/email/changestatus",
+                        method: 'POST',
+                        data: formData,
+                        dataType: "json",
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            window.location.reload();
+                        }
+                    });
+
+                });
+            }
+        });
+    </script>
+}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Mesajlar</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card">
+                <div class="card-header bg-gradient-blue">
+                    <h3 class="card-title text-white">Mesaj Yaz</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <section class="content">
+                        <div class="container-fluid">
+                            <div class="row">
+                                @await Component.InvokeAsync("EmailSidebar")
+                                <div class="col-md-9">
+                                    <div class="card card-primary card-outline">
+                                        <div class="card-header">
+                                            <h3 class="card-title">Gelen Kutusu</h3>
+
+                                            <div class="card-tools">
+                                                <form asp-controller="email" asp-action="inbox" class="input-group input-group-sm" method="get">
+                                                    <input type="hidden" class="form-control" name="filter" value="@Model.Filter" placeholder="Email Ara">
+                                                    <input type="text" class="form-control" name="q" placeholder="Email Ara">
+                                                    <div class="input-group-append">
+                                                        <button type="submit" class="btn btn-primary">
+                                                            <i class="fas fa-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- /.card-tools -->
+                                        </div>
+                                        <!-- /.card-header -->
+                                        <div class="card-body">
+
+                                            <div class="table-responsive mailbox-emails">
+                                                <table class="table table-hover">
+                                                    <tbody>
+                                                        @if (Model.Emails.Count() != 0)
+                                                        {
+                                                            @foreach (var item in Model.Emails)
+                                                            {
+                                                                var tableReadClass = "tr-not-read";
+                                                                if (item.EmailStatus.Count() != 0)
+                                                                {
+                                                                    if (item.EmailStatus.First().ReadStatus == true)
+                                                                    {
+                                                                        tableReadClass = "tr-read";
+                                                                    }
+                                                                }
+                                                                <tr class="@tableReadClass">
+                                                                    <td>
+                                                                        <div class="icheck-primary">
+                                                                            <input data-emailid="@item.Id" type="checkbox" class="select_checkbox" value="0" id="check_@item.Id">
+                                                                            <label for="check_@item.Id"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                    @if (item.EmailStatus.Count() != 0 && item.EmailStatus.FirstOrDefault(p => p.UserId == Convert.ToInt32(_uow.Admin.GetIdByAdmin) && p.UserRole == _uow.Admin.GetRoleByAdmin).FavouriteStatus == true)
+                                                                    {
+                                                                        <td class="mailbox-star"><a class="favourite_btn" data-emailid="@item.Id" data-userid="@senderId" data-userrole="@senderRole" data-status="false" href="javascript:;"><i class="fas fa-star text-warning"></i></a></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td class="mailbox-star"><a class="favourite_btn" data-emailid="@item.Id" data-userid="@senderId" data-userrole="@senderRole" data-status="true" href="javascript:;"><i class="fas fa-star text-gray-dark"></i></a></td>
+                                                                    }
+                                                                    <td width="20%" class="mailbox-name">
+                                                                        @item.SenderName
+                                                                    </td>
+                                                                    <td class="mailbox-subject">
+                                                                        <a class="text-dark" asp-controller="email" asp-action="read" asp-route-id="@item.Id"> <b>@item.Subject</b> @Html.Raw(item.Description)</a>
+                                                                    </td>
+                                                                    <td class="mailbox-attachment">
+                                                                        @if (item.EmailAttachments.Count() != 0)
+                                                                        {
+                                                                            <i class="fas fa-paperclip"></i>
+                                                                        }
+                                                                        @if (item.DraftEnabled == true)
+                                                                        {
+                                                                            <a asp-action="compose" asp-route-id="@item.Id" class="btn btn-info"><i class="fas fa-pencil-alt"></i></a>
+                                                                        }
+                                                                    </td>
+                                                                    <td class="mailbox-date">@Convert.ToDateTime(item.SendDate).ToString("d")</td>
+
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                                <!-- /.table -->
+                                            </div>
+                                            <!-- /.mail-box-emails -->
+                                        </div>
+
+                                        <!-- /.card-body -->
+                                        <div class="card-footer p-0">
+                                            <div class="mailbox-controls">
+                                                <!-- Check all button -->
+                                                <button type="button" class="btn btn-default btn-sm checkbox-toggle select_all__btn">
+                                                    <i class="far fa-square"></i>
+                                                </button>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-default btn-sm delete_btn" data-filter="@Model.Filter"><i class="far fa-trash-alt"></i></button>
+                                                </div>
+                                                <!-- /.btn-group -->
+                                                <button type="button" class="btn btn-default btn-sm btn_refresh"><i class="fas fa-sync-alt"></i></button>
+                                                <div class="float-right">
+                                                    1-50/200
+                                                    <div class="btn-group">
+                                                        <a asp-action="inbox" asp-route-pageNumber="@(Model.Emails.PageIndex - 1)" asp-route-filter="@Model.Filter"
+                                                           class="btn btn-default btn-sm @prevDisabled"><i class="fas fa-chevron-left"></i></a>
+                                                        <a asp-action="inbox" asp-route-pageNumber="@(Model.Emails.PageIndex + 1)" asp-route-filter="@Model.Filter"
+                                                           class="btn btn-default btn-sm @nextDisabled"><i class="fas fa-chevron-right"></i></a>
+                                                    </div>
+                                                    <!-- /.btn-group -->
+                                                </div>
+                                                <!-- /.float-right -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a asp-action="compose" class="btn btn-success text-white"><i class="mr-2 fas fa-pencil-alt"></i> Yeni Mail </a>
+
+                                    <!-- /.card -->
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div><!-- /.container-fluid -->
+                    </section>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

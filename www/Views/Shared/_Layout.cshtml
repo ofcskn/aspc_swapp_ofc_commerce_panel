@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title> @ViewData["Title"] | Swapp-Ofc Satış Paneli | Murat Yücedağ Ticari Otomasyon Kursu</title>
+    <!--
+
+    DIGITAL TREND
+
+    https://templatemo.com/tm-538-digital-trend
+
+    -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="Swapp-OFC ASP.Net Core Tabanlı Murat Yücedağ Ticari Otomasyon Kursu Projesi">
+    <meta name="keywords" content="Murat Yücedağ Ticari Otomasyon Kursu, Swapp Projesi, Ofcskn, Ömer Faruk Coşkun, Asp Core 3.1 Projesi, Taylan Tüfekçi, Murat Yücedağ, ÖFC">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <environment include="Development">
+        <link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="~/assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="~/assets/css/aos.css">
+        <link rel="stylesheet" href="~/assets/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="~/assets/css/owl.theme.default.min.css">
+        <!-- MAIN CSS -->
+        <link rel="stylesheet" href="~/assets/css/templatemo-digital-trend.css">
+        <!-- OWN CSS -->
+        <link href="~/css/site.css" rel="stylesheet" />
+        <link href="~/css/responsive.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/style.min.css" asp-append-version="true">
+    </environment>
+</head>
+<body>
+    <!-- MENU BAR -->
+    @await Component.InvokeAsync("Navbar")
+    @RenderBody()
+    <!-- FOOTER -->
+    @await Component.InvokeAsync("Footer")
+    <!-- SCRIPTS -->
+    <environment include="Development">
+        <script src="~/assets/js/jquery.min.js"></script>
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery.lazy-master/jquery.lazy.min.js"></script>
+        <script src="~/lib/jquery.lazy-master/jquery.lazy.plugins.min.js"></script>
+        <script src="~/assets/js/bootstrap.min.js"></script>
+        <script src="~/assets/js/aos.js"></script>
+        <script src="~/assets/js/owl.carousel.min.js"></script>
+        <script src="~/assets/js/smoothscroll.js"></script>
+        <script src="~/assets/js/custom.js"></script>
+        <script src="~/js/site.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/script.min.js" asp-append-version="true"></script>
+    </environment>
+</body>
+</html>

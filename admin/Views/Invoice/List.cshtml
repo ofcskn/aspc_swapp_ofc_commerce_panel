@@ -1,0 +1,164 @@
+﻿@model IQueryable<Invoice>
+
+@{
+    ViewData["Title"] = "Fatura Listesi";
+    var i = 1;
+
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark"></h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/admin/home/">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Faturalar</li>
+                        <li class="breadcrumb-item active">Liste</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="col-md-12">
+            <!-- Default box -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Faturalar</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-3">
+                    <div class="table-responsive">
+                        <table id="example_list" class="table table-striped projects">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        #
+                                    </th>
+                                    <th>Seri Numarası</th>
+                                    <th>Gönderim Tarihi</th>
+                                    <th>Vergi Dairesi</th>
+                                    <th>Gönderici</th>
+                                    <th>Alıcı</th>
+                                    <th>Alıcı Mail</th>
+                                    <th>İşlemler</th>
+                                    <th class="d-none"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.SerialNumber</td>
+                                        <td>@Convert.ToDateTime(item.SendDate).ToString("d")</td>
+                                        <td>@item.TaxAdministration</td>
+                                        <td>@item.Staff.Name @item.Staff.Surname</td>
+                                        <td>@item.Current.Name @item.Current.Surname</td>
+                                        <td>@item.Current.Mail</td>
+                                        <td class="project-actions text-right">
+                                            @if (item.DueDate == null)
+                                            {
+                                                <a class="btn btn-success mr-2" asp-controller="emaildesign" asp-action="index" asp-route-filter="invoice" asp-route-id="@item.Id"><i class="fas fa-envelope mr-2"></i>Fatura Postala</a>
+                                            }
+                                            else
+                                            {
+                                                <a class="btn btn-secondary text-white  mr-2"><i class="fas fa-envelope mr-2 "></i>Tekrar Postala</a>
+                                            }
+                                            <a class="btn btn-outline-dark " asp-action="detail" asp-route-id="@item.Id"><i class="fas fa-chess-board mr-2"></i>Detay</a>
+                                            <a class="btn btn-info " asp-action="manage" asp-route-id="@item.Id"><i class="fas fa-pencil-alt"></i></a>
+                                            <a class="btn btn-danger text-white delete" data-id="@item.Id"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                        <td class="d-none">@(i++)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+@section style{
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+}
+@section script{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+    <script>
+        $('#example_list').DataTable({
+        });
+    </script>
+    <script>
+        $(".delete").on("click", function () {
+            var id = $(this).data("id");
+            var formData = new FormData();
+            formData.append("id", id);
+
+            swal("Faturayı sileceksiniz. Emin misiniz?", {
+                buttons: {
+                    cancel: "Geri Dön",
+                    delete: {
+                        text: "Sil",
+                        value: "delete",
+                        closeModal: false,
+                    },
+                },
+            })
+                .then((value) => {
+                    switch (value) {
+                        case "delete":
+                            $.ajax({
+                                url: "/admin/invoice/delete",
+                                method: 'POST',
+                                data: formData,
+                                dataType: "json",
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    swal("Heey", "Fatura silindi.", "success");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                },
+                                error: function () {
+                                    swal("Owww!", "Fatura silinemedi. Lütfen daha sonra tekrar dene.!", "error");
+                                    setTimeout(
+                                        function () {
+                                            location.reload();
+                                        }, 1500);
+                                }
+                            });
+                            break;
+                        default:
+                            swal("Görüşürüz!");
+                            setTimeout(
+                                function () {
+                                    location.reload();
+                                }, 1000);
+                    }
+                });
+        });
+    </script>
+}

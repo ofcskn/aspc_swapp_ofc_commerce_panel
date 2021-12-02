@@ -1,0 +1,33 @@
+﻿@model IQueryable<Blog>
+@{ 
+    string webpImage = null;
+}
+<section class="blog section-padding">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-12 col-12 py-5 mt-5 mb-3 text-center">
+
+                <h1 class="mb-4" data-aos="fade-up">BLOGLAR</h1>
+            </div>
+
+            @foreach (var item in Model)
+            {
+                webpImage = System.IO.Path.GetFileNameWithoutExtension(item.Image) + ".webp";
+
+                <div class="col-md-6 col-12 blog_box mb-4">
+                    <div class="blog-header" data-aos="fade-up" data-aos-delay="100">
+                        <div class="lazy-loader lazy-loader-bg"></div>
+                        <img data-src="/img/blog/@webpImage" data-srcset="/img/blog/@item.Image" class="img-fluid lazy" alt="blog header">
+
+                        <div class="blog-header-info">
+                            <h4 class="text-capitalize blog-category text-white">@item.SubTitle</h4>
+
+                            <h3><a class="text-uppercase" href="/blog/@item.Permalink">@item.Title</a></h3>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
